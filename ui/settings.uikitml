@@ -1,0 +1,104 @@
+<style>
+  .settings-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 3;
+    padding-bottom: 3;
+    padding-left: 4;
+    padding-right: 4;
+    background-color: rgba(0, 0, 0, 0.9);
+    border-color: #ff6600;
+    border-width: 0.12;
+    border-radius: 1.5;
+  }
+  .settings-title {
+    font-size: 3;
+    color: #ff6600;
+    font-weight: bold;
+    margin-bottom: 2;
+  }
+  .settings-row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin-bottom: 0.6;
+    align-items: center;
+  }
+  .settings-label {
+    font-size: 1.4;
+    color: #cccccc;
+    width: 40%;
+  }
+  .vol-btn {
+    font-size: 1.6;
+    color: #ff6600;
+    background-color: rgba(255, 102, 0, 0.15);
+    border-color: #ff6600;
+    border-width: 0.04;
+    border-radius: 0.4;
+    padding-top: 0.3;
+    padding-bottom: 0.3;
+    padding-left: 0.8;
+    padding-right: 0.8;
+    cursor: pointer;
+  }
+  .vol-value {
+    font-size: 1.4;
+    color: #ffffff;
+    margin-left: 0.5;
+    margin-right: 0.5;
+    width: 15%;
+    align-items: center;
+  }
+  .settings-back {
+    font-size: 1.6;
+    color: #aaaaaa;
+    background-color: rgba(100, 100, 100, 0.2);
+    border-color: #666666;
+    border-width: 0.06;
+    border-radius: 0.6;
+    padding-top: 0.6;
+    padding-bottom: 0.6;
+    padding-left: 2;
+    padding-right: 2;
+    margin-top: 1.5;
+    cursor: pointer;
+  }
+  .section-header {
+    font-size: 1.6;
+    color: #ffaa44;
+    margin-top: 1;
+    margin-bottom: 0.5;
+    width: 100%;
+  }
+</style>
+<div class="settings-panel">
+  <span class="settings-title">SETTINGS</span>
+  <span class="section-header">Audio</span>
+  <div class="settings-row">
+    <span class="settings-label">Master</span>
+    <span id="btn-master-down" class="vol-btn" cursor="pointer">-</span>
+    <span id="vol-master" class="vol-value">100%</span>
+    <span id="btn-master-up" class="vol-btn" cursor="pointer">+</span>
+  </div>
+  <div class="settings-row">
+    <span class="settings-label">SFX</span>
+    <span id="btn-sfx-down" class="vol-btn" cursor="pointer">-</span>
+    <span id="vol-sfx" class="vol-value">100%</span>
+    <span id="btn-sfx-up" class="vol-btn" cursor="pointer">+</span>
+  </div>
+  <div class="settings-row">
+    <span class="settings-label">Music</span>
+    <span id="btn-music-down" class="vol-btn" cursor="pointer">-</span>
+    <span id="vol-music" class="vol-value">100%</span>
+    <span id="btn-music-up" class="vol-btn" cursor="pointer">+</span>
+  </div>
+  <span class="section-header">Court Theme</span>
+  <div class="settings-row">
+    <span id="btn-theme-prev" class="vol-btn" cursor="pointer">&lt;</span>
+    <span id="theme-name" class="vol-value">Neon Arena</span>
+    <span id="btn-theme-next" class="vol-btn" cursor="pointer">&gt;</span>
+  </div>
+  <span id="btn-settings-back" class="settings-back" cursor="pointer">BACK</span>
+</div>

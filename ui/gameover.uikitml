@@ -1,0 +1,82 @@
+<style>
+  .gameover-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 3;
+    padding-bottom: 3;
+    padding-left: 5;
+    padding-right: 5;
+    background-color: rgba(0, 0, 0, 0.9);
+    border-color: #ff6600;
+    border-width: 0.12;
+    border-radius: 1.5;
+  }
+  .gameover-title {
+    font-size: 4;
+    color: #ff6600;
+    font-weight: bold;
+    margin-bottom: 1;
+  }
+  .gameover-subtitle {
+    font-size: 1.6;
+    color: #ffaa44;
+    margin-bottom: 2;
+  }
+  .stat-row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin-bottom: 0.5;
+  }
+  .stat-label {
+    font-size: 1.5;
+    color: #888888;
+    width: 50%;
+  }
+  .stat-value {
+    font-size: 1.5;
+    color: #ffffff;
+    font-weight: bold;
+    width: 50%;
+    align-items: flex-end;
+  }
+  .gameover-btn {
+    font-size: 2;
+    color: #ffffff;
+    background-color: rgba(255, 102, 0, 0.3);
+    border-color: #ff6600;
+    border-width: 0.06;
+    border-radius: 0.6;
+    padding-top: 0.8;
+    padding-bottom: 0.8;
+    padding-left: 3;
+    padding-right: 3;
+    margin-top: 0.5;
+    cursor: pointer;
+    width: 100%;
+    align-items: center;
+  }
+</style>
+<div class="gameover-panel">
+  <span id="go-title" class="gameover-title">GAME OVER</span>
+  <span id="go-subtitle" class="gameover-subtitle">Nice shooting!</span>
+  <div class="stat-row">
+    <span class="stat-label">Score</span>
+    <span id="go-score" class="stat-value">0</span>
+  </div>
+  <div class="stat-row">
+    <span class="stat-label">Shots Made</span>
+    <span id="go-made" class="stat-value">0/0</span>
+  </div>
+  <div class="stat-row">
+    <span class="stat-label">Accuracy</span>
+    <span id="go-accuracy" class="stat-value">0%</span>
+  </div>
+  <div class="stat-row">
+    <span class="stat-label">Best Streak</span>
+    <span id="go-streak" class="stat-value">0</span>
+  </div>
+  <span id="btn-replay" class="gameover-btn" cursor="pointer">PLAY AGAIN</span>
+  <span id="btn-menu" class="gameover-btn" cursor="pointer">MAIN MENU</span>
+</div>

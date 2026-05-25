@@ -1,0 +1,68 @@
+<style>
+  .title-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 4;
+    padding-bottom: 4;
+    padding-left: 6;
+    padding-right: 6;
+    background-color: rgba(0, 0, 0, 0.85);
+    border-color: #ff6600;
+    border-width: 0.15;
+    border-radius: 1.5;
+  }
+  .title-text {
+    font-size: 5;
+    color: #ff6600;
+    font-weight: bold;
+    margin-bottom: 1;
+  }
+  .subtitle {
+    font-size: 1.8;
+    color: #ffaa44;
+    margin-bottom: 3;
+  }
+  .menu-btn {
+    font-size: 2.2;
+    color: #ffffff;
+    background-color: rgba(255, 102, 0, 0.3);
+    border-color: #ff6600;
+    border-width: 0.08;
+    border-radius: 0.8;
+    padding-top: 1;
+    padding-bottom: 1;
+    padding-left: 3;
+    padding-right: 3;
+    margin-bottom: 0.8;
+    cursor: pointer;
+    width: 100%;
+    align-items: center;
+  }
+  .menu-btn-alt {
+    font-size: 1.8;
+    color: #aaaaaa;
+    background-color: rgba(100, 100, 100, 0.2);
+    border-color: #666666;
+    border-width: 0.06;
+    border-radius: 0.8;
+    padding-top: 0.8;
+    padding-bottom: 0.8;
+    padding-left: 3;
+    padding-right: 3;
+    margin-bottom: 0.6;
+    cursor: pointer;
+    width: 100%;
+    align-items: center;
+  }
+</style>
+<div class="title-panel">
+  <span class="title-text">NEON HOOPS</span>
+  <span class="subtitle">VR Basketball</span>
+  <span id="btn-play" class="menu-btn" cursor="pointer">PLAY</span>
+  <span id="btn-modes" class="menu-btn" cursor="pointer">GAME MODES</span>
+  <span id="btn-leaderboard" class="menu-btn-alt" cursor="pointer">LEADERBOARD</span>
+  <span id="btn-achievements" class="menu-btn-alt" cursor="pointer">ACHIEVEMENTS</span>
+  <span id="btn-settings" class="menu-btn-alt" cursor="pointer">SETTINGS</span>
+  <span id="btn-help" class="menu-btn-alt" cursor="pointer">HELP</span>
+</div>

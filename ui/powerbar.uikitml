@@ -1,0 +1,33 @@
+<style>
+  .power-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 0.5;
+    padding-bottom: 0.5;
+    padding-left: 1;
+    padding-right: 1;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-color: #ff6600;
+    border-width: 0.06;
+    border-radius: 0.5;
+  }
+  .power-label {
+    font-size: 1;
+    color: #888888;
+  }
+  .power-bar {
+    font-size: 1.8;
+    color: #00ff88;
+    font-weight: bold;
+  }
+  .power-pct {
+    font-size: 1.2;
+    color: #ffffff;
+  }
+</style>
+<div class="power-panel">
+  <span class="power-label">POWER</span>
+  <span id="power-bar" class="power-bar">|||||-----</span>
+  <span id="power-pct" class="power-pct">50%</span>
+</div>

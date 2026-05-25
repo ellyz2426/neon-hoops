@@ -1,0 +1,67 @@
+<style>
+  .diff-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 3;
+    padding-bottom: 3;
+    padding-left: 5;
+    padding-right: 5;
+    background-color: rgba(0, 0, 0, 0.85);
+    border-color: #ff6600;
+    border-width: 0.12;
+    border-radius: 1.5;
+  }
+  .diff-title {
+    font-size: 3;
+    color: #ff6600;
+    font-weight: bold;
+    margin-bottom: 2;
+  }
+  .diff-btn {
+    font-size: 2;
+    color: #ffffff;
+    background-color: rgba(255, 102, 0, 0.25);
+    border-color: #ff6600;
+    border-width: 0.06;
+    border-radius: 0.6;
+    padding-top: 0.8;
+    padding-bottom: 0.8;
+    padding-left: 3;
+    padding-right: 3;
+    margin-bottom: 0.6;
+    cursor: pointer;
+    width: 100%;
+    align-items: center;
+  }
+  .diff-desc {
+    font-size: 1.1;
+    color: #888888;
+    margin-bottom: 0.8;
+    align-items: center;
+  }
+  .diff-back {
+    font-size: 1.6;
+    color: #aaaaaa;
+    background-color: rgba(100, 100, 100, 0.2);
+    border-color: #666666;
+    border-width: 0.06;
+    border-radius: 0.6;
+    padding-top: 0.6;
+    padding-bottom: 0.6;
+    padding-left: 2;
+    padding-right: 2;
+    margin-top: 1;
+    cursor: pointer;
+  }
+</style>
+<div class="diff-panel">
+  <span class="diff-title">DIFFICULTY</span>
+  <span id="btn-easy" class="diff-btn" cursor="pointer">EASY</span>
+  <span class="diff-desc">Forgiving accuracy, slower pace</span>
+  <span id="btn-medium" class="diff-btn" cursor="pointer">MEDIUM</span>
+  <span class="diff-desc">Standard challenge</span>
+  <span id="btn-hard" class="diff-btn" cursor="pointer">HARD</span>
+  <span class="diff-desc">Tight accuracy, fast pace</span>
+  <span id="btn-diff-back" class="diff-back" cursor="pointer">BACK</span>
+</div>
