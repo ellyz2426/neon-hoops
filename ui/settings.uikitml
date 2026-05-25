@@ -100,5 +100,9 @@
     <span id="theme-name" class="vol-value">Neon Arena</span>
     <span id="btn-theme-next" class="vol-btn" cursor="pointer">&gt;</span>
   </div>
+  <span class="section-header">Ball</span>
+  <div class="settings-row">
+    <span id="btn-ball-select" class="vol-btn" cursor="pointer">Ball Skin &gt;</span>
+  </div>
   <span id="btn-settings-back" class="settings-back" cursor="pointer">BACK</span>
 </div>

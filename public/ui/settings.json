@@ -265,6 +265,40 @@
         "sourceTag": "span",
         "type": "custom",
         "children": [
+          "Ball"
+        ],
+        "properties": {
+          "class": "section-header"
+        },
+        "dataUid": "uid-24"
+      },
+      {
+        "type": "container",
+        "sourceTag": "div",
+        "children": [
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "Ball Skin >"
+            ],
+            "properties": {
+              "id": "btn-ball-select",
+              "class": "vol-btn",
+              "cursor": "pointer"
+            },
+            "dataUid": "uid-26"
+          }
+        ],
+        "properties": {
+          "class": "settings-row"
+        },
+        "dataUid": "uid-25"
+      },
+      {
+        "sourceTag": "span",
+        "type": "custom",
+        "children": [
           "BACK"
         ],
         "properties": {
@@ -272,7 +306,7 @@
           "class": "settings-back",
           "cursor": "pointer"
         },
-        "dataUid": "uid-24"
+        "dataUid": "uid-27"
       }
     ],
     "properties": {
@@ -458,7 +492,7 @@
         "column": 0
       },
       "end": {
-        "line": 103,
+        "line": 107,
         "column": 6
       }
     },
@@ -689,6 +723,36 @@
       },
       "end": {
         "line": 102,
+        "column": 42
+      }
+    },
+    "uid-25": {
+      "start": {
+        "line": 103,
+        "column": 2
+      },
+      "end": {
+        "line": 105,
+        "column": 8
+      }
+    },
+    "uid-26": {
+      "start": {
+        "line": 104,
+        "column": 4
+      },
+      "end": {
+        "line": 104,
+        "column": 85
+      }
+    },
+    "uid-27": {
+      "start": {
+        "line": 106,
+        "column": 2
+      },
+      "end": {
+        "line": 106,
         "column": 81
       }
     }
