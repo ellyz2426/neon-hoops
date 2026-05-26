@@ -315,9 +315,12 @@ async function main() {
       case 'threepoint':
         return SHOT_POSITIONS.threepoint[gs.threePointRack]?.clone() ?? SHOT_POSITIONS.threepoint[0].clone();
       case 'arcade': {
-        const dist = FREE_THROW_DIST + (gs.arcadeLevel - 1) * 0.5;
-        const angle = (Math.random() - 0.5) * 1.0;
-        return new Vector3(Math.sin(angle) * dist * 0.3, 0, dist);
+        // Progressive distance: starts at free throw, gradually pushes further
+        const baseDist = FREE_THROW_DIST + Math.min(gs.arcadeLevel - 1, 15) * 0.5;
+        // Lateral spread increases with level
+        const spreadFactor = Math.min(0.3 + gs.arcadeLevel * 0.05, 0.8);
+        const angle = (Math.random() - 0.5) * 2 * spreadFactor;
+        return new Vector3(Math.sin(angle) * baseDist * 0.4, 0, Math.min(baseDist, HALF_COURT_DIST));
       }
       case 'horse': {
         const hd = FREE_THROW_DIST + Math.random() * 4;
@@ -487,7 +490,35 @@ async function main() {
         if (gs.threePointScore >= 20) unlockAchievement('three_pt_20');
         break;
       case 'arcade':
-        if (result.made) gs.arcadeLevel++;
+        if (result.made) {
+          const prevLevel = gs.arcadeLevel;
+          gs.arcadeLevel++;
+
+          // Time bonus: +3s on every make, +5s on swish
+          const timeBonus = result.swish ? 5 : 3;
+          gs.arcadeTimeLeft += timeBonus;
+          audio.playTimeBonus();
+          showToast(`+${timeBonus}s`, 'TIME BONUS');
+
+          // Level milestone announcements every 5 levels
+          const milestones = [5, 10, 15, 20, 25, 30];
+          for (const m of milestones) {
+            if (gs.arcadeLevel >= m && prevLevel < m && !gs.arcadeMilestonesHit.includes(m)) {
+              gs.arcadeMilestonesHit.push(m);
+              audio.playLevelUp();
+              const msgs: Record<number, string> = {
+                5: 'HEATING UP!', 10: 'ON FIRE!', 15: 'UNSTOPPABLE!',
+                20: 'LEGENDARY!', 25: 'MYTHIC!', 30: 'GODLIKE!',
+              };
+              setTimeout(() => showToast(`LEVEL ${m}`, msgs[m] || 'INCREDIBLE!'), 600);
+              confetti.burst(new Vector3(0, 3, -2), 20);
+            }
+          }
+
+          // Shrink rim visually at higher levels (min 70% of original)
+          const rimScale = Math.max(0.7, 1 - (gs.arcadeLevel - 1) * 0.015);
+          assets.rimMesh.scale.set(rimScale, 1, rimScale);
+        }
         break;
       case 'horse':
         if (gs.horseCurrentShooter === 0) {
@@ -573,6 +604,8 @@ async function main() {
     gs.mode = mode;
     gs.resetForGame();
     resetBallToShotPosition();
+    // Reset rim scale for fresh game
+    assets.rimMesh.scale.set(1, 1, 1);
     gs.state = 'countdown';
     gs.countdownValue = 3;
     gs.countdownTimer = 0;
@@ -611,6 +644,10 @@ async function main() {
       const won = gs.horseLetters[1].length >= 5;
       setText(goDoc, 'go-title', won ? 'YOU WIN!' : 'YOU LOSE');
       setText(goDoc, 'go-subtitle', `You: ${gs.horseLetters[0] || '-'}  AI: ${gs.horseLetters[1] || '-'}`);
+    } else if (gs.mode === 'arcade') {
+      setText(goDoc, 'go-title', 'GAME OVER');
+      const levelMsg = gs.arcadeLevel >= 20 ? 'LEGENDARY RUN!' : gs.arcadeLevel >= 10 ? 'Amazing run!' : gs.arcadeLevel >= 5 ? 'Good run!' : 'Nice try!';
+      setText(goDoc, 'go-subtitle', `Level ${gs.arcadeLevel} | ${levelMsg}`);
     } else {
       setText(goDoc, 'go-title', 'GAME OVER');
       setText(goDoc, 'go-subtitle', gs.score >= 50 ? 'Great game!' : 'Nice shooting!');
@@ -635,6 +672,8 @@ async function main() {
     ballState.inFlight = false;
     assets.ball.visible = true;
     assets.ballGlow.visible = true;
+    // Reset rim scale if it was shrunk (arcade mode)
+    assets.rimMesh.scale.set(1, 1, 1);
     audio.stopAmbient();
     audio.startAmbient();
     showPanel(titleEntity);
@@ -659,7 +698,7 @@ async function main() {
     switch (gs.mode) {
       case 'freethrow': info = `${10 - gs.shotsTaken} left`; break;
       case 'threepoint': info = `Rack ${gs.threePointRack + 1}/5`; break;
-      case 'arcade': info = `Lvl ${gs.arcadeLevel} - ${Math.ceil(gs.arcadeTimeLeft)}s`; break;
+      case 'arcade': info = `Lvl ${gs.arcadeLevel} | ${Math.ceil(gs.arcadeTimeLeft)}s`; break;
       case 'horse': info = `You: ${gs.horseLetters[0] || '-'}  AI: ${gs.horseLetters[1] || '-'}`; break;
       case 'trickshot': info = TRICK_SHOTS[gs.trickShotIndex]?.name ?? 'Done'; break;
       case 'daily': {
@@ -766,7 +805,7 @@ async function main() {
     const modeDoc = modeEntity.getValue(PanelDocument, 'document') as UIKitDocument | undefined;
     bindBtn(modeDoc, 'btn-freethrow', audio, () => startGame('freethrow'));
     bindBtn(modeDoc, 'btn-threepoint', audio, () => startGame('threepoint'));
-    bindBtn(modeDoc, 'btn-arcade', audio, () => startGame('arcade'));
+    bindBtn(modeDoc, 'btn-arcade', audio, () => { gs.mode = 'arcade'; gs.state = 'difficulty'; showPanel(diffEntity); });
     bindBtn(modeDoc, 'btn-horse', audio, () => { gs.mode = 'horse'; gs.state = 'difficulty'; showPanel(diffEntity); });
     bindBtn(modeDoc, 'btn-trickshot', audio, () => startGame('trickshot'));
     bindBtn(modeDoc, 'btn-daily', audio, () => { updateDailyUI(); showPanel(dailyEntity); });
@@ -774,9 +813,9 @@ async function main() {
     bindBtn(modeDoc, 'btn-modes-back', audio, () => { gs.state = 'title'; showPanel(titleEntity); });
 
     const diffDoc = diffEntity.getValue(PanelDocument, 'document') as UIKitDocument | undefined;
-    bindBtn(diffDoc, 'btn-easy', audio, () => { difficulty = 'easy'; wind.setDifficulty('easy'); startGame('horse'); });
-    bindBtn(diffDoc, 'btn-medium', audio, () => { difficulty = 'medium'; wind.setDifficulty('medium'); startGame('horse'); });
-    bindBtn(diffDoc, 'btn-hard', audio, () => { difficulty = 'hard'; wind.setDifficulty('hard'); startGame('horse'); });
+    bindBtn(diffDoc, 'btn-easy', audio, () => { difficulty = 'easy'; wind.setDifficulty('easy'); startGame(gs.mode); });
+    bindBtn(diffDoc, 'btn-medium', audio, () => { difficulty = 'medium'; wind.setDifficulty('medium'); startGame(gs.mode); });
+    bindBtn(diffDoc, 'btn-hard', audio, () => { difficulty = 'hard'; wind.setDifficulty('hard'); startGame(gs.mode); });
     bindBtn(diffDoc, 'btn-diff-back', audio, () => { gs.state = 'modeselect'; showPanel(modeEntity); });
 
     const pauseDoc = pauseEntity.getValue(PanelDocument, 'document') as UIKitDocument | undefined;
@@ -1037,7 +1076,9 @@ async function main() {
 
     // Game logic
     if (gs.state === 'playing' && !gs.paused) {
-      updateBallPhysics(ballState, dt, assets.ball, trailPoints, physicsCallbacks);
+      // Rim scale for arcade mode (shrinks at higher levels)
+      const rimScale = gs.mode === 'arcade' ? Math.max(0.7, 1 - (gs.arcadeLevel - 1) * 0.015) : 1.0;
+      updateBallPhysics(ballState, dt, assets.ball, trailPoints, physicsCallbacks, rimScale);
 
       // Arcade timer
       if (gs.mode === 'arcade' && !ballState.inFlight) {

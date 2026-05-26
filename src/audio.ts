@@ -484,6 +484,49 @@ export class AudioManager {
     ns.start(t);
   }
 
+  /** Level-up jingle — ascending arpeggio for arcade milestones */
+  playLevelUp() {
+    this.init();
+    if (!this.ctx || !this.sfxGain) return;
+    const t = this.ctx.currentTime;
+    const notes = [523, 659, 784, 1047]; // C5-E5-G5-C6
+    notes.forEach((freq, i) => {
+      const o = this.ctx!.createOscillator();
+      o.type = 'square';
+      o.frequency.value = freq;
+      const lp = this.ctx!.createBiquadFilter();
+      lp.type = 'lowpass';
+      lp.frequency.value = 3000;
+      const g = this.ctx!.createGain();
+      g.gain.setValueAtTime(0, t + i * 0.08);
+      g.gain.linearRampToValueAtTime(0.06, t + i * 0.08 + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.001, t + i * 0.08 + 0.3);
+      o.connect(lp);
+      lp.connect(g);
+      g.connect(this.sfxGain!);
+      o.start(t + i * 0.08);
+      o.stop(t + i * 0.08 + 0.35);
+    });
+  }
+
+  /** Time bonus pickup — quick bright chirp */
+  playTimeBonus() {
+    this.init();
+    if (!this.ctx || !this.sfxGain) return;
+    const t = this.ctx.currentTime;
+    const o = this.ctx.createOscillator();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(880, t);
+    o.frequency.exponentialRampToValueAtTime(1760, t + 0.1);
+    const g = this.ctx.createGain();
+    g.gain.setValueAtTime(0.08, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+    o.connect(g);
+    g.connect(this.sfxGain);
+    o.start(t);
+    o.stop(t + 0.15);
+  }
+
   /** Streak break — descending tone when streak ends */
   playStreakBreak() {
     this.init();

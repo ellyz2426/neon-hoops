@@ -194,6 +194,7 @@ export class GameStateManager {
   // Arcade
   arcadeLevel = 1;
   arcadeTimeLeft = 30;
+  arcadeMilestonesHit: number[] = [];
 
   // H.O.R.S.E.
   horseLetters: [string, string] = ['', ''];
@@ -237,6 +238,7 @@ export class GameStateManager {
     this.bankShotCount = 0;
     this.arcadeLevel = 1;
     this.arcadeTimeLeft = 30;
+    this.arcadeMilestonesHit = [];
     this.horseLetters = ['', ''];
     this.horseCurrentShooter = 0;
     this.horseChallengeShot = null;

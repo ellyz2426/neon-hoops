@@ -39,6 +39,7 @@ export interface CourtAssets {
   courtLinesMat: MeshBasicMaterial;
   bbMat: MeshStandardMaterial;
   rimMat: MeshStandardMaterial;
+  rimMesh: Mesh;
   netGroup: Group;
   accentLights: PointLight[];
   ball: Mesh;
@@ -277,7 +278,7 @@ export function buildCourt(world: World): CourtAssets {
   world.scene.add(shotMarker);
 
   return {
-    courtFloor, gridMat, courtLinesMat, bbMat, rimMat,
+    courtFloor, gridMat, courtLinesMat, bbMat, rimMat, rimMesh: rim,
     netGroup, accentLights, ball, ballGlow, ballMat,
     shotMarker, markerMat, decoShapes, ambientParticles,
   };

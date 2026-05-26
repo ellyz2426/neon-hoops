@@ -58,11 +58,13 @@ export function updateBallPhysics(
   ball: Mesh,
   trailPoints: TrailPoint[],
   callbacks: PhysicsCallbacks,
+  rimScale: number = 1.0,
 ): boolean {
   if (!state.inFlight) return false;
 
   const substeps = 4;
   const subDt = dt / substeps;
+  const effectiveRimRadius = RIM_RADIUS * rimScale;
 
   for (let s = 0; s < substeps; s++) {
     // Gravity
@@ -94,11 +96,11 @@ export function updateBallPhysics(
       callbacks.onBackboardHit(state.pos.clone());
     }
 
-    // Rim collision
+    // Rim collision (uses effective rim radius for arcade scaling)
     const dx = state.pos.x;
     const dz = state.pos.z;
     const rimDist = Math.sqrt(dx * dx + dz * dz);
-    const rimDiff = Math.abs(rimDist - RIM_RADIUS);
+    const rimDiff = Math.abs(rimDist - effectiveRimRadius);
 
     if (rimDiff < BALL_RADIUS + 0.02 && Math.abs(state.pos.y - RIM_HEIGHT) < BALL_RADIUS + 0.05) {
       const nx = dx / (rimDist || 1);
@@ -108,21 +110,21 @@ export function updateBallPhysics(
       state.vel.z -= 1.5 * dot * nz;
       state.vel.y *= 0.7;
 
-      if (rimDist < RIM_RADIUS) {
-        state.pos.x = nx * (RIM_RADIUS - BALL_RADIUS - 0.03);
-        state.pos.z = nz * (RIM_RADIUS - BALL_RADIUS - 0.03);
+      if (rimDist < effectiveRimRadius) {
+        state.pos.x = nx * (effectiveRimRadius - BALL_RADIUS - 0.03);
+        state.pos.z = nz * (effectiveRimRadius - BALL_RADIUS - 0.03);
       } else {
-        state.pos.x = nx * (RIM_RADIUS + BALL_RADIUS + 0.03);
-        state.pos.z = nz * (RIM_RADIUS + BALL_RADIUS + 0.03);
+        state.pos.x = nx * (effectiveRimRadius + BALL_RADIUS + 0.03);
+        state.pos.z = nz * (effectiveRimRadius + BALL_RADIUS + 0.03);
       }
 
       state.bounceCount++;
       callbacks.onRimHit(state.pos.clone());
     }
 
-    // Pass through hoop
+    // Pass through hoop (uses effective rim radius)
     if (!state.shotProcessed && state.pos.y < RIM_HEIGHT && state.pos.y > RIM_HEIGHT - 0.5) {
-      const passThrough = Math.sqrt(state.pos.x * state.pos.x + state.pos.z * state.pos.z) < RIM_RADIUS - BALL_RADIUS * 0.5;
+      const passThrough = Math.sqrt(state.pos.x * state.pos.x + state.pos.z * state.pos.z) < effectiveRimRadius - BALL_RADIUS * 0.5;
       if (passThrough && state.vel.y < 0) {
         state.shotProcessed = true;
         callbacks.onPassThroughHoop();
