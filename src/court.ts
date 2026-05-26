@@ -216,22 +216,22 @@ export function buildCourt(world: World): CourtAssets {
   ball.add(seamLines);
 
   // ---- LIGHTING ----
-  world.scene.add(new AmbientLight(0x222244, 0.4));
+  world.scene.add(new AmbientLight(0x222244, 0.4) as any);
   const mainLight = new DirectionalLight(0xffffff, 0.6);
   mainLight.position.set(5, 10, 5);
-  world.scene.add(mainLight);
+  world.scene.add(mainLight as any);
 
   const accentLights: PointLight[] = [];
   ([[0, 6, 0], [-5, 5, 5], [5, 5, 5], [0, 5, -3]] as [number, number, number][]).forEach(([x, y, z]) => {
     const light = new PointLight(0xff6600, 0.5, 20);
     light.position.set(x, y, z);
-    world.scene.add(light);
+    world.scene.add(light as any);
     accentLights.push(light);
   });
 
   const hoopLight = new PointLight(0xff4400, 1.0, 8);
   hoopLight.position.set(0, RIM_HEIGHT + 2, 0);
-  world.scene.add(hoopLight);
+  world.scene.add(hoopLight as any);
 
   world.scene.fog = new Fog(0x000811, 5, 35);
 

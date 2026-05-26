@@ -63,6 +63,7 @@
   <span id="btn-modes" class="menu-btn" cursor="pointer">GAME MODES</span>
   <span id="btn-leaderboard" class="menu-btn-alt" cursor="pointer">LEADERBOARD</span>
   <span id="btn-achievements" class="menu-btn-alt" cursor="pointer">ACHIEVEMENTS</span>
+  <span id="btn-stats" class="menu-btn-alt" cursor="pointer">CAREER STATS</span>
   <span id="btn-settings" class="menu-btn-alt" cursor="pointer">SETTINGS</span>
   <span id="btn-help" class="menu-btn-alt" cursor="pointer">HELP</span>
 </div>

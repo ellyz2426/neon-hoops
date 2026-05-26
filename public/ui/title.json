@@ -81,6 +81,19 @@
         "sourceTag": "span",
         "type": "custom",
         "children": [
+          "CAREER STATS"
+        ],
+        "properties": {
+          "id": "btn-stats",
+          "class": "menu-btn-alt",
+          "cursor": "pointer"
+        },
+        "dataUid": "uid-8"
+      },
+      {
+        "sourceTag": "span",
+        "type": "custom",
+        "children": [
           "SETTINGS"
         ],
         "properties": {
@@ -88,7 +101,7 @@
           "class": "menu-btn-alt",
           "cursor": "pointer"
         },
-        "dataUid": "uid-8"
+        "dataUid": "uid-9"
       },
       {
         "sourceTag": "span",
@@ -101,7 +114,7 @@
           "class": "menu-btn-alt",
           "cursor": "pointer"
         },
-        "dataUid": "uid-9"
+        "dataUid": "uid-10"
       }
     ],
     "properties": {
@@ -234,7 +247,7 @@
         "column": 0
       },
       "end": {
-        "line": 67,
+        "line": 68,
         "column": 6
       }
     },
@@ -305,7 +318,7 @@
       },
       "end": {
         "line": 65,
-        "column": 79
+        "column": 80
       }
     },
     "uid-9": {
@@ -315,6 +328,16 @@
       },
       "end": {
         "line": 66,
+        "column": 79
+      }
+    },
+    "uid-10": {
+      "start": {
+        "line": 67,
+        "column": 2
+      },
+      "end": {
+        "line": 67,
         "column": 71
       }
     }

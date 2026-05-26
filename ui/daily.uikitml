@@ -1,0 +1,62 @@
+<style>
+  .daily-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3;
+    background-color: rgba(0, 8, 20, 0.95);
+    border-color: #ff8800;
+    border-width: 0.15;
+    border-radius: 1.5;
+    gap: 1;
+  }
+  .daily-title {
+    font-size: 3.5;
+    color: #ff8800;
+    font-weight: bold;
+  }
+  .daily-date {
+    font-size: 1.8;
+    color: #ffaa44;
+  }
+  .daily-desc {
+    font-size: 1.4;
+    color: #aaaaaa;
+    text-align: center;
+  }
+  .daily-best {
+    font-size: 1.6;
+    color: #ffcc00;
+  }
+  .daily-shot-label {
+    font-size: 1.5;
+    color: #88ccff;
+  }
+  .daily-btn {
+    font-size: 2;
+    color: #ffffff;
+    background-color: rgba(255, 136, 0, 0.3);
+    border-color: #ff8800;
+    border-width: 0.1;
+    border-radius: 0.8;
+    padding-top: 0.8;
+    padding-bottom: 0.8;
+    padding-left: 3;
+    padding-right: 3;
+    cursor: pointer;
+  }
+  .daily-back-btn {
+    font-size: 1.5;
+    color: #888888;
+    cursor: pointer;
+  }
+</style>
+<div class="daily-panel">
+  <span class="daily-title">DAILY CHALLENGE</span>
+  <span id="daily-date" class="daily-date">May 25, 2026</span>
+  <span class="daily-desc">10 shots from random positions. Same challenge for everyone today!</span>
+  <span id="daily-best" class="daily-best">Best: --</span>
+  <span id="daily-shot" class="daily-shot-label"></span>
+  <button id="btn-daily-play" class="daily-btn" cursor="pointer">PLAY TODAY</button>
+  <button id="btn-daily-back" class="daily-back-btn" cursor="pointer">< BACK</button>
+</div>

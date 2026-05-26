@@ -4,8 +4,8 @@
 
 import { Vector3 } from '@iwsdk/core';
 
-export type GameState = 'title' | 'modeselect' | 'difficulty' | 'countdown' | 'playing' | 'paused' | 'gameover' | 'leaderboard' | 'achievements' | 'settings' | 'help';
-export type GameMode = 'freethrow' | 'threepoint' | 'arcade' | 'horse' | 'trickshot' | 'practice';
+export type GameState = 'title' | 'modeselect' | 'difficulty' | 'countdown' | 'playing' | 'paused' | 'gameover' | 'leaderboard' | 'achievements' | 'settings' | 'help' | 'dailychallenge';
+export type GameMode = 'freethrow' | 'threepoint' | 'arcade' | 'horse' | 'trickshot' | 'practice' | 'daily';
 export type Difficulty = 'easy' | 'medium' | 'hard';
 
 export interface ShotResult {
@@ -141,6 +141,10 @@ export const TRICK_SHOTS: TrickShot[] = [
   { name: 'Downtown', desc: 'Hit from half court', pos: new Vector3(0, 0, HALF_COURT_DIST), requireSwish: false },
   { name: 'Side Swish', desc: 'Swish from the wing', pos: new Vector3(-4, 0, 5), requireSwish: true },
   { name: 'Off the Glass', desc: 'Bank shot from distance', pos: new Vector3(-2, 0, 7), requireSwish: false, requireBank: true },
+  { name: 'Baseline Bomb', desc: 'Score from the baseline', pos: new Vector3(7, 0, 1.5), requireSwish: false },
+  { name: 'Pure Splash', desc: 'Swish from three-pt arc', pos: new Vector3(3, 0, 6.5), requireSwish: true },
+  { name: 'Glass Cleaner', desc: 'Bank from the elbow', pos: new Vector3(3, 0, FREE_THROW_DIST), requireSwish: false, requireBank: true },
+  { name: 'Impossible', desc: 'Swish from half court', pos: new Vector3(0, 0, HALF_COURT_DIST), requireSwish: true },
 ];
 
 // ============================================================
@@ -199,6 +203,10 @@ export class GameStateManager {
   // Trick shots
   trickShotIndex = 0;
 
+  // Daily challenge
+  dailyShotIndex = 0;
+  dailyScore = 0;
+
   // Three-point
   threePointRack = 0;
   threePointBallInRack = 0;
@@ -215,6 +223,9 @@ export class GameStateManager {
 
   // Daily challenge
   dailyChallenge: DailyChallenge | null = null;
+  careerBestStreak = 0;
+  dailyDaysPlayed = 0;
+  highScores: Record<string, number> = {};
 
   resetForGame() {
     this.score = 0;
@@ -230,6 +241,8 @@ export class GameStateManager {
     this.horseCurrentShooter = 0;
     this.horseChallengeShot = null;
     this.trickShotIndex = 0;
+    this.dailyShotIndex = 0;
+    this.dailyScore = 0;
     this.threePointRack = 0;
     this.threePointBallInRack = 0;
     this.threePointScore = 0;
@@ -253,6 +266,9 @@ export class GameStateManager {
         if (data.theme !== undefined) this.themeIndex = data.theme;
         if (data.ballSkin !== undefined) this.ballSkinIndex = data.ballSkin;
         if (data.dailyChallenge) this.dailyChallenge = data.dailyChallenge;
+        if (data.careerBestStreak) this.careerBestStreak = data.careerBestStreak;
+        if (data.dailyDaysPlayed) this.dailyDaysPlayed = data.dailyDaysPlayed;
+        if (data.highScores) this.highScores = data.highScores;
       }
     } catch {}
   }
@@ -267,6 +283,9 @@ export class GameStateManager {
         theme: this.themeIndex,
         ballSkin: this.ballSkinIndex,
         dailyChallenge: this.dailyChallenge,
+        careerBestStreak: this.careerBestStreak,
+        dailyDaysPlayed: this.dailyDaysPlayed,
+        highScores: this.highScores,
       }));
     } catch {}
   }

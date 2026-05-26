@@ -48,7 +48,7 @@ import {
 function setText(doc: UIKitDocument | undefined, id: string, text: string) {
   if (!doc) return;
   const el = doc.getElementById(id);
-  if (el && 'text' in el && el.text && 'value' in el.text) {
+  if (el && el.text && typeof el.text === 'object' && 'value' in (el.text as Record<string, unknown>)) {
     (el.text as any).value = text;
   }
 }
@@ -237,11 +237,21 @@ async function main() {
   ballSelectEntity.object3D!.position.set(0, 2.5, -2);
   ballSelectEntity.addComponent(PanelUI, { config: '/ui/ballselect.json', maxWidth: 0.6, maxHeight: 0.8 });
 
+  // Daily challenge panel
+  const dailyEntity = world.createTransformEntity(undefined, { persistent: true });
+  dailyEntity.object3D!.position.set(0, 2.5, -2);
+  dailyEntity.addComponent(PanelUI, { config: '/ui/daily.json', maxWidth: 0.6, maxHeight: 0.9 });
+
+  // Stats panel
+  const statsEntity = world.createTransformEntity(undefined, { persistent: true });
+  statsEntity.object3D!.position.set(0, 2.5, -2);
+  statsEntity.addComponent(PanelUI, { config: '/ui/stats.json', maxWidth: 0.6, maxHeight: 1.1 });
+
   // Panel visibility
   const allPanelEntities = [
     titleEntity, modeEntity, diffEntity, hudEntity, toastEntity, powerEntity,
     countdownEntity, pauseEntity, goEntity, lbEntity, achEntity, settingsEntity,
-    helpEntity, ballSelectEntity,
+    helpEntity, ballSelectEntity, dailyEntity, statsEntity,
   ];
 
   let toastTimer = 0;
@@ -285,6 +295,11 @@ async function main() {
       }
       case 'trickshot':
         return TRICK_SHOTS[gs.trickShotIndex]?.pos.clone() ?? SHOT_POSITIONS.freethrow.clone();
+      case 'daily': {
+        const dailyShots = generateDailyShots(getDailySeed());
+        const shot = dailyShots[gs.dailyShotIndex];
+        return shot ? shot.pos.clone() : SHOT_POSITIONS.freethrow.clone();
+      }
       case 'practice':
         return SHOT_POSITIONS.freethrow.clone();
       default:
@@ -314,6 +329,7 @@ async function main() {
       case 'arcade': return gs.arcadeTimeLeft <= 0;
       case 'horse': return gs.horseLetters[0].length >= 5 || gs.horseLetters[1].length >= 5;
       case 'trickshot': return gs.trickShotIndex >= TRICK_SHOTS.length;
+      case 'daily': return gs.dailyShotIndex >= 10;
       case 'practice': return false;
       default: return false;
     }
@@ -337,12 +353,15 @@ async function main() {
         audio.playSwish();
         showToast('SWISH!', `+${result.points}`);
         particles.spawn(assets.ball.position.clone(), 15, 0xff6600);
+        if (result.points >= 5) audio.playPerfectShot();
       } else if (result.bankShot) {
         audio.playMake();
+        audio.playNetSwoosh();
         showToast('BANK SHOT!', `+${result.points}`);
         particles.spawn(assets.ball.position.clone(), 10, 0x00aaff);
       } else {
         audio.playMake();
+        audio.playNetSwoosh();
         showToast('GOOD!', `+${result.points}`);
         particles.spawn(assets.ball.position.clone(), 8, 0x00ff88);
       }
@@ -354,6 +373,11 @@ async function main() {
         audio.playCrowdCheer(Math.min(gs.streak / 5, 1.5));
         particles.burstRing(assets.ball.position.clone(), 12, 0xff6600, 4);
         setTimeout(() => showToast(msgs[idx], `${gs.streak} in a row!`), 800);
+      }
+
+      // Update career best streak
+      if (gs.streak > gs.careerBestStreak) {
+        gs.careerBestStreak = gs.streak;
       }
 
       // Achievement checks
@@ -368,6 +392,9 @@ async function main() {
       if (gs.totalShotsMadeAll >= 100) unlockAchievement('total_100');
       if (gs.totalShotsMadeAll >= 500) unlockAchievement('total_500');
     } else {
+      if (gs.streak >= 3) {
+        audio.playStreakBreak();
+      }
       audio.playMiss();
       showToast('MISS', '');
     }
@@ -474,6 +501,20 @@ async function main() {
         }
         break;
       }
+      case 'daily':
+        if (result.made) gs.dailyScore += result.points;
+        gs.dailyShotIndex++;
+        if (gs.dailyShotIndex >= 10) {
+          // Update daily challenge best
+          const today = new Date().toISOString().slice(0, 10);
+          if (!gs.dailyChallenge || gs.dailyChallenge.date !== today) {
+            gs.dailyChallenge = { seed: getDailySeed(), shots: [], date: today, bestScore: gs.dailyScore };
+            gs.dailyDaysPlayed++;
+          } else if (gs.dailyScore > gs.dailyChallenge.bestScore) {
+            gs.dailyChallenge.bestScore = gs.dailyScore;
+          }
+        }
+        break;
     }
   }
 
@@ -506,6 +547,12 @@ async function main() {
     if (gs.totalGamesPlayed >= 50) unlockAchievement('games_50');
     if (gs.mode === 'arcade' && gs.score >= 50) unlockAchievement('arcade_50');
     if (gs.mode === 'arcade' && gs.score >= 100) unlockAchievement('arcade_100');
+
+    // Track high scores per mode
+    const prevBest = gs.highScores[gs.mode] ?? 0;
+    if (gs.score > prevBest) {
+      gs.highScores[gs.mode] = gs.score;
+    }
 
     const accuracy = gs.shotsTaken > 0 ? Math.round((gs.shotsMade / gs.shotsTaken) * 100) : 0;
     gs.leaderboard.push({ score: gs.score, mode: gs.mode, accuracy, date: new Date().toLocaleDateString() });
@@ -564,6 +611,7 @@ async function main() {
     const modeNames: Record<GameMode, string> = {
       freethrow: 'FREE THROW', threepoint: '3-PT CONTEST', arcade: 'ARCADE',
       horse: 'H.O.R.S.E.', trickshot: 'TRICK SHOTS', practice: 'PRACTICE',
+      daily: 'DAILY CHALLENGE',
     };
     setText(doc, 'hud-mode', modeNames[gs.mode] || gs.mode.toUpperCase());
     let info = '';
@@ -573,6 +621,12 @@ async function main() {
       case 'arcade': info = `Lvl ${gs.arcadeLevel} - ${Math.ceil(gs.arcadeTimeLeft)}s`; break;
       case 'horse': info = `You: ${gs.horseLetters[0] || '-'}  AI: ${gs.horseLetters[1] || '-'}`; break;
       case 'trickshot': info = TRICK_SHOTS[gs.trickShotIndex]?.name ?? 'Done'; break;
+      case 'daily': {
+        const dailyShots = generateDailyShots(getDailySeed());
+        const shotLabel = dailyShots[gs.dailyShotIndex]?.label ?? 'Done';
+        info = `${gs.dailyShotIndex + 1}/10 — ${shotLabel}`;
+        break;
+      }
       case 'practice': info = 'No pressure'; break;
     }
     setText(doc, 'hud-info', info);
@@ -600,7 +654,7 @@ async function main() {
     const doc = achEntity.getValue(PanelDocument, 'document') as UIKitDocument | undefined;
     const unlocked = gs.achievements.filter(a => a.unlocked).length;
     setText(doc, 'ach-count', `${unlocked} / ${gs.achievements.length} Unlocked`);
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 20; i++) {
       const a = gs.achievements[i];
       if (a) {
         setText(doc, `ach-n${i}`, a.name);
@@ -623,6 +677,31 @@ async function main() {
     setText(doc, 'ball-name', BALL_SKINS[gs.ballSkinIndex].name);
   }
 
+  function updateDailyUI() {
+    const doc = dailyEntity.getValue(PanelDocument, 'document') as UIKitDocument | undefined;
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    setText(doc, 'daily-date', dateStr);
+    const today = now.toISOString().slice(0, 10);
+    const best = gs.dailyChallenge?.date === today ? `Best: ${gs.dailyChallenge.bestScore}` : 'Best: --';
+    setText(doc, 'daily-best', best);
+  }
+
+  function updateStatsUI() {
+    const doc = statsEntity.getValue(PanelDocument, 'document') as UIKitDocument | undefined;
+    setText(doc, 'stat-games', `${gs.totalGamesPlayed}`);
+    setText(doc, 'stat-makes', `${gs.totalShotsMadeAll}`);
+    setText(doc, 'stat-streak', `${gs.careerBestStreak}`);
+    const achCount = gs.achievements.filter(a => a.unlocked).length;
+    setText(doc, 'stat-achs', `${achCount}/${gs.achievements.length}`);
+    const today = new Date().toISOString().slice(0, 10);
+    setText(doc, 'stat-daily-best', gs.dailyChallenge?.date === today ? `${gs.dailyChallenge.bestScore}` : '--');
+    setText(doc, 'stat-daily-days', `${gs.dailyDaysPlayed}`);
+    setText(doc, 'stat-hi-ft', gs.highScores['freethrow'] ? `${gs.highScores['freethrow']}` : '--');
+    setText(doc, 'stat-hi-3pt', gs.highScores['threepoint'] ? `${gs.highScores['threepoint']}` : '--');
+    setText(doc, 'stat-hi-arcade', gs.highScores['arcade'] ? `${gs.highScores['arcade']}` : '--');
+  }
+
   // ============================================================
   // UI BINDING
   // ============================================================
@@ -638,6 +717,7 @@ async function main() {
     bindBtn(titleDoc, 'btn-modes', audio, () => { gs.state = 'modeselect'; showPanel(modeEntity); });
     bindBtn(titleDoc, 'btn-leaderboard', audio, () => { gs.state = 'leaderboard'; updateLeaderboardUI(); showPanel(lbEntity); });
     bindBtn(titleDoc, 'btn-achievements', audio, () => { gs.state = 'achievements'; updateAchievementsUI(); showPanel(achEntity); });
+    bindBtn(titleDoc, 'btn-stats', audio, () => { updateStatsUI(); showPanel(statsEntity); });
     bindBtn(titleDoc, 'btn-settings', audio, () => { gs.state = 'settings'; updateSettingsUI(); showPanel(settingsEntity); });
     bindBtn(titleDoc, 'btn-help', audio, () => { gs.state = 'help'; showPanel(helpEntity); });
 
@@ -647,6 +727,7 @@ async function main() {
     bindBtn(modeDoc, 'btn-arcade', audio, () => startGame('arcade'));
     bindBtn(modeDoc, 'btn-horse', audio, () => { gs.mode = 'horse'; gs.state = 'difficulty'; showPanel(diffEntity); });
     bindBtn(modeDoc, 'btn-trickshot', audio, () => startGame('trickshot'));
+    bindBtn(modeDoc, 'btn-daily', audio, () => { updateDailyUI(); showPanel(dailyEntity); });
     bindBtn(modeDoc, 'btn-practice', audio, () => startGame('practice'));
     bindBtn(modeDoc, 'btn-modes-back', audio, () => { gs.state = 'title'; showPanel(titleEntity); });
 
@@ -715,6 +796,15 @@ async function main() {
     const helpDoc = helpEntity.getValue(PanelDocument, 'document') as UIKitDocument | undefined;
     bindBtn(helpDoc, 'btn-help-back', audio, () => { gs.state = 'title'; showPanel(titleEntity); });
 
+    // Daily challenge
+    const dailyDoc = dailyEntity.getValue(PanelDocument, 'document') as UIKitDocument | undefined;
+    bindBtn(dailyDoc, 'btn-daily-play', audio, () => startGame('daily'));
+    bindBtn(dailyDoc, 'btn-daily-back', audio, () => { gs.state = 'modeselect'; showPanel(modeEntity); });
+
+    // Stats
+    const statsDoc = statsEntity.getValue(PanelDocument, 'document') as UIKitDocument | undefined;
+    bindBtn(statsDoc, 'btn-stats-back', audio, () => { gs.state = 'title'; showPanel(titleEntity); });
+
     // Apply loaded settings
     showPanel(titleEntity);
     audio.startAmbient();
@@ -747,6 +837,10 @@ async function main() {
     const dy = mouseY - e.clientY;
     chargePower = Math.min(1, Math.max(0, dy / 200));
     updatePowerBar(chargePower);
+    // Charge hum feedback
+    if (chargePower > 0.1 && Math.random() < 0.15) {
+      audio.playChargeHum(chargePower);
+    }
     // Show arc preview while charging
     if (chargePower > 0.1) {
       arcPreview.show(ballState.pos.clone(), chargePower, aimX);
@@ -772,6 +866,28 @@ async function main() {
       } else if (gs.state === 'paused') {
         resumeGame();
       }
+    }
+    // Quick restart with R key during gameover
+    if (e.key === 'r' || e.key === 'R') {
+      if (gs.state === 'gameover') {
+        startGame(gs.mode);
+      }
+    }
+    // Quick menu with M key during gameover
+    if (e.key === 'm' || e.key === 'M') {
+      if (gs.state === 'gameover') {
+        quitToMenu();
+      }
+    }
+    // Number keys 1-7 for quick mode select from title
+    if (gs.state === 'title' || gs.state === 'modeselect') {
+      if (e.key === '1') startGame('freethrow');
+      else if (e.key === '2') startGame('threepoint');
+      else if (e.key === '3') startGame('arcade');
+      else if (e.key === '4') { gs.mode = 'horse'; gs.state = 'difficulty'; showPanel(diffEntity); }
+      else if (e.key === '5') startGame('trickshot');
+      else if (e.key === '6') { updateDailyUI(); showPanel(dailyEntity); }
+      else if (e.key === '7') startGame('practice');
     }
   });
 

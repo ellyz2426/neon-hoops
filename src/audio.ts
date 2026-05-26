@@ -388,4 +388,117 @@ export class AudioManager {
       o.stop(t + 1.0 + i * 0.3);
     });
   }
+
+  /** Net swoosh — softer rustling than swish, for makes that aren't swishes */
+  playNetSwoosh() {
+    this.init();
+    if (!this.ctx || !this.sfxGain) return;
+    const t = this.ctx.currentTime;
+    const buf = this.ctx.createBuffer(1, this.ctx.sampleRate * 0.2, this.ctx.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) {
+      const env = Math.sin((i / d.length) * Math.PI) * 0.5;
+      d[i] = (Math.random() * 2 - 1) * env;
+    }
+    const ns = this.ctx.createBufferSource();
+    ns.buffer = buf;
+    const bp = this.ctx.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.frequency.value = 1200;
+    bp.Q.value = 1.5;
+    const g = this.ctx.createGain();
+    g.gain.setValueAtTime(0.08, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+    ns.connect(bp);
+    bp.connect(g);
+    g.connect(this.sfxGain);
+    ns.start(t);
+  }
+
+  /** Charging hum — a slowly rising tone while powering up */
+  playChargeHum(power: number) {
+    this.init();
+    if (!this.ctx || !this.sfxGain) return;
+    const t = this.ctx.currentTime;
+    const freq = 100 + power * 400;
+    const osc = this.ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    const g = this.ctx.createGain();
+    g.gain.setValueAtTime(0.03 * power, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
+    osc.connect(g);
+    g.connect(this.sfxGain);
+    osc.start(t);
+    osc.stop(t + 0.05);
+  }
+
+  /** Perfect shot chime — plays for high-scoring shots */
+  playPerfectShot() {
+    this.init();
+    if (!this.ctx || !this.sfxGain) return;
+    const t = this.ctx.currentTime;
+    [784, 988, 1175, 1568, 1976].forEach((f, i) => {
+      const o = this.ctx!.createOscillator();
+      o.type = 'sine';
+      o.frequency.value = f;
+      const g = this.ctx!.createGain();
+      g.gain.setValueAtTime(0, t + i * 0.06);
+      g.gain.linearRampToValueAtTime(0.07, t + i * 0.06 + 0.015);
+      g.gain.exponentialRampToValueAtTime(0.001, t + i * 0.06 + 0.35);
+      o.connect(g);
+      g.connect(this.sfxGain!);
+      o.start(t + i * 0.06);
+      o.stop(t + i * 0.06 + 0.4);
+    });
+  }
+
+  /** Ball dribble sound — for idle ball animation */
+  playDribble() {
+    this.init();
+    if (!this.ctx || !this.sfxGain) return;
+    const t = this.ctx.currentTime;
+    // Impact thud
+    const osc = this.ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(180, t);
+    osc.frequency.exponentialRampToValueAtTime(80, t + 0.08);
+    const g = this.ctx.createGain();
+    g.gain.setValueAtTime(0.06, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+    osc.connect(g);
+    g.connect(this.sfxGain);
+    osc.start(t);
+    osc.stop(t + 0.12);
+    // High slap
+    const buf = this.ctx.createBuffer(1, this.ctx.sampleRate * 0.03, this.ctx.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * 0.15;
+    const ns = this.ctx.createBufferSource();
+    ns.buffer = buf;
+    const ng = this.ctx.createGain();
+    ng.gain.setValueAtTime(0.05, t);
+    ng.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
+    ns.connect(ng);
+    ng.connect(this.sfxGain);
+    ns.start(t);
+  }
+
+  /** Streak break — descending tone when streak ends */
+  playStreakBreak() {
+    this.init();
+    if (!this.ctx || !this.sfxGain) return;
+    const t = this.ctx.currentTime;
+    const o = this.ctx.createOscillator();
+    o.type = 'triangle';
+    o.frequency.setValueAtTime(400, t);
+    o.frequency.exponentialRampToValueAtTime(150, t + 0.25);
+    const g = this.ctx.createGain();
+    g.gain.setValueAtTime(0.06, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+    o.connect(g);
+    g.connect(this.sfxGain);
+    o.start(t);
+    o.stop(t + 0.3);
+  }
 }

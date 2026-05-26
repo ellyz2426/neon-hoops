@@ -2,45 +2,45 @@
   .help-panel {
     display: flex;
     flex-direction: column;
-    padding-top: 3;
-    padding-bottom: 3;
-    padding-left: 4;
-    padding-right: 4;
-    background-color: rgba(0, 0, 0, 0.9);
+    padding-top: 2;
+    padding-bottom: 2;
+    padding-left: 3;
+    padding-right: 3;
+    background-color: rgba(0, 0, 0, 0.92);
     border-color: #ff6600;
     border-width: 0.12;
     border-radius: 1.5;
   }
   .help-title {
-    font-size: 3;
+    font-size: 2.8;
     color: #ff6600;
     font-weight: bold;
-    margin-bottom: 2;
+    margin-bottom: 1;
     align-items: center;
   }
   .help-section {
-    font-size: 1.6;
+    font-size: 1.5;
     color: #ffaa44;
-    margin-top: 1;
-    margin-bottom: 0.5;
-  }
-  .help-text {
-    font-size: 1.2;
-    color: #cccccc;
+    margin-top: 0.6;
     margin-bottom: 0.3;
   }
+  .help-text {
+    font-size: 1.1;
+    color: #cccccc;
+    margin-bottom: 0.15;
+  }
   .help-back {
-    font-size: 1.6;
+    font-size: 1.5;
     color: #aaaaaa;
     background-color: rgba(100, 100, 100, 0.2);
     border-color: #666666;
     border-width: 0.06;
     border-radius: 0.6;
-    padding-top: 0.6;
-    padding-bottom: 0.6;
+    padding-top: 0.5;
+    padding-bottom: 0.5;
     padding-left: 2;
     padding-right: 2;
-    margin-top: 1.5;
+    margin-top: 1;
     cursor: pointer;
     align-items: center;
   }
@@ -48,26 +48,31 @@
 <div class="help-panel">
   <span class="help-title">HOW TO PLAY</span>
   <span class="help-section">VR Controls</span>
-  <span class="help-text">Grip: Pick up basketball</span>
-  <span class="help-text">Swing + Release Trigger: Throw ball</span>
-  <span class="help-text">A Button: Confirm / Skip</span>
-  <span class="help-text">B Button: Pause</span>
-  <span class="help-text">Thumbstick: Navigate menus</span>
+  <span class="help-text">Right Trigger: Hold to charge, release to shoot</span>
+  <span class="help-text">B Button: Pause game</span>
+  <span class="help-text">Laser Pointer: Navigate menus</span>
   <span class="help-section">Browser Controls</span>
-  <span class="help-text">Click + Drag Up: Aim and set power</span>
-  <span class="help-text">Release: Shoot</span>
-  <span class="help-text">ESC: Pause</span>
-  <span class="help-section">Game Modes</span>
+  <span class="help-text">Click + Drag Up: Charge power (higher = stronger)</span>
+  <span class="help-text">Mouse Left/Right: Aim direction</span>
+  <span class="help-text">Release: Shoot the ball</span>
+  <span class="help-section">Keyboard Shortcuts</span>
+  <span class="help-text">ESC: Pause / Resume</span>
+  <span class="help-text">R: Quick restart (game over screen)</span>
+  <span class="help-text">M: Return to menu (game over screen)</span>
+  <span class="help-text">1-7: Quick mode select from title/modes</span>
+  <span class="help-section">Game Modes (7)</span>
   <span class="help-text">Free Throw: 10 shots from the line</span>
-  <span class="help-text">Three-Point Contest: 5 racks of 5 balls, timed</span>
-  <span class="help-text">Arcade: Progressive difficulty, score attack</span>
-  <span class="help-text">H.O.R.S.E.: Match shots vs AI</span>
-  <span class="help-text">Trick Shots: Bank shots and special challenges</span>
-  <span class="help-text">Practice: Unlimited shooting</span>
+  <span class="help-text">Three-Point Contest: 5 racks, 60s timer</span>
+  <span class="help-text">Arcade: Progressive difficulty, 30s timer</span>
+  <span class="help-text">H.O.R.S.E.: Match shots vs AI opponent</span>
+  <span class="help-text">Trick Shots: 10 special shot challenges</span>
+  <span class="help-text">Daily Challenge: 10 daily shots, same for all</span>
+  <span class="help-text">Practice: Unlimited, no pressure</span>
   <span class="help-section">Scoring</span>
-  <span class="help-text">Swish (no rim): 3 pts + bonus</span>
+  <span class="help-text">Swish (no rim): 3 pts</span>
   <span class="help-text">Clean make: 2 pts</span>
-  <span class="help-text">Bank shot: 2 pts + bank bonus</span>
-  <span class="help-text">Streak bonus at 3+ consecutive makes</span>
+  <span class="help-text">Three-point range: +1 bonus</span>
+  <span class="help-text">Half-court range: +2 bonus</span>
+  <span class="help-text">Streak 3+: escalating bonus per make</span>
   <span id="btn-help-back" class="help-back" cursor="pointer">BACK</span>
 </div>

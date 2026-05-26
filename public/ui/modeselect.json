@@ -127,12 +127,36 @@
         "sourceTag": "span",
         "type": "custom",
         "children": [
-          "Bank shots and nothing-but-net challenges"
+          "10 challenges: bank shots, swishes & more"
         ],
         "properties": {
           "class": "mode-desc"
         },
         "dataUid": "uid-12"
+      },
+      {
+        "sourceTag": "span",
+        "type": "custom",
+        "children": [
+          "DAILY CHALLENGE"
+        ],
+        "properties": {
+          "id": "btn-daily",
+          "class": "mode-btn",
+          "cursor": "pointer"
+        },
+        "dataUid": "uid-13"
+      },
+      {
+        "sourceTag": "span",
+        "type": "custom",
+        "children": [
+          "New challenge every day, same for everyone"
+        ],
+        "properties": {
+          "class": "mode-desc"
+        },
+        "dataUid": "uid-14"
       },
       {
         "sourceTag": "span",
@@ -145,7 +169,7 @@
           "class": "mode-btn",
           "cursor": "pointer"
         },
-        "dataUid": "uid-13"
+        "dataUid": "uid-15"
       },
       {
         "sourceTag": "span",
@@ -156,7 +180,7 @@
         "properties": {
           "class": "mode-desc"
         },
-        "dataUid": "uid-14"
+        "dataUid": "uid-16"
       },
       {
         "sourceTag": "span",
@@ -169,7 +193,7 @@
           "class": "back-btn",
           "cursor": "pointer"
         },
-        "dataUid": "uid-15"
+        "dataUid": "uid-17"
       }
     ],
     "properties": {
@@ -301,7 +325,7 @@
         "column": 0
       },
       "end": {
-        "line": 72,
+        "line": 74,
         "column": 6
       }
     },
@@ -412,7 +436,7 @@
       },
       "end": {
         "line": 68,
-        "column": 74
+        "column": 78
       }
     },
     "uid-13": {
@@ -422,7 +446,7 @@
       },
       "end": {
         "line": 69,
-        "column": 75
+        "column": 79
       }
     },
     "uid-14": {
@@ -432,7 +456,7 @@
       },
       "end": {
         "line": 70,
-        "column": 64
+        "column": 75
       }
     },
     "uid-15": {
@@ -442,6 +466,26 @@
       },
       "end": {
         "line": 71,
+        "column": 75
+      }
+    },
+    "uid-16": {
+      "start": {
+        "line": 72,
+        "column": 2
+      },
+      "end": {
+        "line": 72,
+        "column": 64
+      }
+    },
+    "uid-17": {
+      "start": {
+        "line": 73,
+        "column": 2
+      },
+      "end": {
+        "line": 73,
         "column": 73
       }
     }

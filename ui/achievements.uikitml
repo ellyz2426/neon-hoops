@@ -3,85 +3,88 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 3;
-    padding-bottom: 3;
-    padding-left: 4;
-    padding-right: 4;
-    background-color: rgba(0, 0, 0, 0.9);
+    padding-top: 2;
+    padding-bottom: 2;
+    padding-left: 3;
+    padding-right: 3;
+    background-color: rgba(0, 0, 0, 0.92);
     border-color: #ff6600;
     border-width: 0.12;
     border-radius: 1.5;
   }
   .ach-title {
-    font-size: 3;
+    font-size: 2.8;
     color: #ff6600;
     font-weight: bold;
-    margin-bottom: 1;
+    margin-bottom: 0.5;
   }
   .ach-count {
-    font-size: 1.4;
+    font-size: 1.3;
     color: #888888;
-    margin-bottom: 1.5;
+    margin-bottom: 1;
   }
   .ach-row {
     display: flex;
     flex-direction: row;
     width: 100%;
-    margin-bottom: 0.4;
-    padding-bottom: 0.3;
-    border-bottom-width: 0.03;
-    border-color: rgba(255,102,0,0.2);
+    margin-bottom: 0.15;
+    padding-bottom: 0.15;
+    border-bottom-width: 0.02;
+    border-color: rgba(255,102,0,0.15);
   }
   .ach-name {
-    font-size: 1.3;
+    font-size: 1.1;
     color: #ffffff;
-    width: 50%;
+    width: 40%;
   }
   .ach-desc {
-    font-size: 1.1;
+    font-size: 0.95;
     color: #888888;
-    width: 35%;
+    width: 48%;
   }
   .ach-status {
-    font-size: 1.2;
+    font-size: 1.1;
     color: #ff6600;
-    width: 15%;
+    width: 12%;
     align-items: flex-end;
   }
-  .ach-locked {
-    font-size: 1.3;
-    color: #444444;
-    width: 50%;
-  }
   .ach-back {
-    font-size: 1.6;
+    font-size: 1.5;
     color: #aaaaaa;
     background-color: rgba(100, 100, 100, 0.2);
     border-color: #666666;
     border-width: 0.06;
     border-radius: 0.6;
-    padding-top: 0.6;
-    padding-bottom: 0.6;
+    padding-top: 0.5;
+    padding-bottom: 0.5;
     padding-left: 2;
     padding-right: 2;
-    margin-top: 1;
+    margin-top: 0.8;
     cursor: pointer;
   }
 </style>
 <div class="ach-panel">
   <span class="ach-title">ACHIEVEMENTS</span>
   <span id="ach-count" class="ach-count">0 / 20 Unlocked</span>
-  <div id="ach-0" class="ach-row"><span id="ach-n0" class="ach-name">--</span><span id="ach-d0" class="ach-desc">--</span><span id="ach-s0" class="ach-status">--</span></div>
-  <div id="ach-1" class="ach-row"><span id="ach-n1" class="ach-name">--</span><span id="ach-d1" class="ach-desc">--</span><span id="ach-s1" class="ach-status">--</span></div>
-  <div id="ach-2" class="ach-row"><span id="ach-n2" class="ach-name">--</span><span id="ach-d2" class="ach-desc">--</span><span id="ach-s2" class="ach-status">--</span></div>
-  <div id="ach-3" class="ach-row"><span id="ach-n3" class="ach-name">--</span><span id="ach-d3" class="ach-desc">--</span><span id="ach-s3" class="ach-status">--</span></div>
-  <div id="ach-4" class="ach-row"><span id="ach-n4" class="ach-name">--</span><span id="ach-d4" class="ach-desc">--</span><span id="ach-s4" class="ach-status">--</span></div>
-  <div id="ach-5" class="ach-row"><span id="ach-n5" class="ach-name">--</span><span id="ach-d5" class="ach-desc">--</span><span id="ach-s5" class="ach-status">--</span></div>
-  <div id="ach-6" class="ach-row"><span id="ach-n6" class="ach-name">--</span><span id="ach-d6" class="ach-desc">--</span><span id="ach-s6" class="ach-status">--</span></div>
-  <div id="ach-7" class="ach-row"><span id="ach-n7" class="ach-name">--</span><span id="ach-d7" class="ach-desc">--</span><span id="ach-s7" class="ach-status">--</span></div>
-  <div id="ach-8" class="ach-row"><span id="ach-n8" class="ach-name">--</span><span id="ach-d8" class="ach-desc">--</span><span id="ach-s8" class="ach-status">--</span></div>
-  <div id="ach-9" class="ach-row"><span id="ach-n9" class="ach-name">--</span><span id="ach-d9" class="ach-desc">--</span><span id="ach-s9" class="ach-status">--</span></div>
-  <div id="ach-10" class="ach-row"><span id="ach-n10" class="ach-name">--</span><span id="ach-d10" class="ach-desc">--</span><span id="ach-s10" class="ach-status">--</span></div>
-  <div id="ach-11" class="ach-row"><span id="ach-n11" class="ach-name">--</span><span id="ach-d11" class="ach-desc">--</span><span id="ach-s11" class="ach-status">--</span></div>
+  <div class="ach-row"><span id="ach-n0" class="ach-name">--</span><span id="ach-d0" class="ach-desc">--</span><span id="ach-s0" class="ach-status">--</span></div>
+  <div class="ach-row"><span id="ach-n1" class="ach-name">--</span><span id="ach-d1" class="ach-desc">--</span><span id="ach-s1" class="ach-status">--</span></div>
+  <div class="ach-row"><span id="ach-n2" class="ach-name">--</span><span id="ach-d2" class="ach-desc">--</span><span id="ach-s2" class="ach-status">--</span></div>
+  <div class="ach-row"><span id="ach-n3" class="ach-name">--</span><span id="ach-d3" class="ach-desc">--</span><span id="ach-s3" class="ach-status">--</span></div>
+  <div class="ach-row"><span id="ach-n4" class="ach-name">--</span><span id="ach-d4" class="ach-desc">--</span><span id="ach-s4" class="ach-status">--</span></div>
+  <div class="ach-row"><span id="ach-n5" class="ach-name">--</span><span id="ach-d5" class="ach-desc">--</span><span id="ach-s5" class="ach-status">--</span></div>
+  <div class="ach-row"><span id="ach-n6" class="ach-name">--</span><span id="ach-d6" class="ach-desc">--</span><span id="ach-s6" class="ach-status">--</span></div>
+  <div class="ach-row"><span id="ach-n7" class="ach-name">--</span><span id="ach-d7" class="ach-desc">--</span><span id="ach-s7" class="ach-status">--</span></div>
+  <div class="ach-row"><span id="ach-n8" class="ach-name">--</span><span id="ach-d8" class="ach-desc">--</span><span id="ach-s8" class="ach-status">--</span></div>
+  <div class="ach-row"><span id="ach-n9" class="ach-name">--</span><span id="ach-d9" class="ach-desc">--</span><span id="ach-s9" class="ach-status">--</span></div>
+  <div class="ach-row"><span id="ach-n10" class="ach-name">--</span><span id="ach-d10" class="ach-desc">--</span><span id="ach-s10" class="ach-status">--</span></div>
+  <div class="ach-row"><span id="ach-n11" class="ach-name">--</span><span id="ach-d11" class="ach-desc">--</span><span id="ach-s11" class="ach-status">--</span></div>
+  <div class="ach-row"><span id="ach-n12" class="ach-name">--</span><span id="ach-d12" class="ach-desc">--</span><span id="ach-s12" class="ach-status">--</span></div>
+  <div class="ach-row"><span id="ach-n13" class="ach-name">--</span><span id="ach-d13" class="ach-desc">--</span><span id="ach-s13" class="ach-status">--</span></div>
+  <div class="ach-row"><span id="ach-n14" class="ach-name">--</span><span id="ach-d14" class="ach-desc">--</span><span id="ach-s14" class="ach-status">--</span></div>
+  <div class="ach-row"><span id="ach-n15" class="ach-name">--</span><span id="ach-d15" class="ach-desc">--</span><span id="ach-s15" class="ach-status">--</span></div>
+  <div class="ach-row"><span id="ach-n16" class="ach-name">--</span><span id="ach-d16" class="ach-desc">--</span><span id="ach-s16" class="ach-status">--</span></div>
+  <div class="ach-row"><span id="ach-n17" class="ach-name">--</span><span id="ach-d17" class="ach-desc">--</span><span id="ach-s17" class="ach-status">--</span></div>
+  <div class="ach-row"><span id="ach-n18" class="ach-name">--</span><span id="ach-d18" class="ach-desc">--</span><span id="ach-s18" class="ach-status">--</span></div>
+  <div class="ach-row"><span id="ach-n19" class="ach-name">--</span><span id="ach-d19" class="ach-desc">--</span><span id="ach-s19" class="ach-status">--</span></div>
   <span id="btn-ach-back" class="ach-back" cursor="pointer">BACK</span>
 </div>

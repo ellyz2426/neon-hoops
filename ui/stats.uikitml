@@ -1,0 +1,97 @@
+<style>
+  .stats-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3;
+    background-color: rgba(0, 8, 20, 0.95);
+    border-color: #00ccff;
+    border-width: 0.15;
+    border-radius: 1.5;
+    gap: 0.5;
+  }
+  .stats-title {
+    font-size: 3;
+    color: #00ccff;
+    font-weight: bold;
+  }
+  .stats-section {
+    font-size: 1.8;
+    color: #ffaa00;
+    font-weight: bold;
+  }
+  .stats-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    padding-left: 1;
+    padding-right: 1;
+  }
+  .stats-label {
+    font-size: 1.4;
+    color: #888888;
+  }
+  .stats-value {
+    font-size: 1.4;
+    color: #ffffff;
+    font-weight: bold;
+  }
+  .stats-divider {
+    width: 100%;
+    height: 0.05;
+    background-color: rgba(0, 200, 255, 0.2);
+  }
+  .stats-back-btn {
+    font-size: 1.5;
+    color: #888888;
+    cursor: pointer;
+    padding-top: 0.5;
+  }
+</style>
+<div class="stats-panel">
+  <span class="stats-title">CAREER STATS</span>
+  <div class="stats-divider"></div>
+  <span class="stats-section">SHOOTING</span>
+  <div class="stats-row">
+    <span class="stats-label">Total Games</span>
+    <span id="stat-games" class="stats-value">0</span>
+  </div>
+  <div class="stats-row">
+    <span class="stats-label">Total Makes</span>
+    <span id="stat-makes" class="stats-value">0</span>
+  </div>
+  <div class="stats-row">
+    <span class="stats-label">Best Streak</span>
+    <span id="stat-streak" class="stats-value">0</span>
+  </div>
+  <div class="stats-row">
+    <span class="stats-label">Achievements</span>
+    <span id="stat-achs" class="stats-value">0/20</span>
+  </div>
+  <div class="stats-divider"></div>
+  <span class="stats-section">DAILY CHALLENGE</span>
+  <div class="stats-row">
+    <span class="stats-label">Today's Best</span>
+    <span id="stat-daily-best" class="stats-value">--</span>
+  </div>
+  <div class="stats-row">
+    <span class="stats-label">Days Played</span>
+    <span id="stat-daily-days" class="stats-value">0</span>
+  </div>
+  <div class="stats-divider"></div>
+  <span class="stats-section">HIGH SCORES</span>
+  <div class="stats-row">
+    <span class="stats-label">Free Throw</span>
+    <span id="stat-hi-ft" class="stats-value">--</span>
+  </div>
+  <div class="stats-row">
+    <span class="stats-label">Three-Point</span>
+    <span id="stat-hi-3pt" class="stats-value">--</span>
+  </div>
+  <div class="stats-row">
+    <span class="stats-label">Arcade</span>
+    <span id="stat-hi-arcade" class="stats-value">--</span>
+  </div>
+  <button id="btn-stats-back" class="stats-back-btn" cursor="pointer">< BACK</button>
+</div>

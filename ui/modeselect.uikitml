@@ -66,7 +66,9 @@
   <span id="btn-horse" class="mode-btn" cursor="pointer">H.O.R.S.E.</span>
   <span class="mode-desc">Classic horse vs AI opponent</span>
   <span id="btn-trickshot" class="mode-btn" cursor="pointer">TRICK SHOTS</span>
-  <span class="mode-desc">Bank shots and nothing-but-net challenges</span>
+  <span class="mode-desc">10 challenges: bank shots, swishes &amp; more</span>
+  <span id="btn-daily" class="mode-btn" cursor="pointer">DAILY CHALLENGE</span>
+  <span class="mode-desc">New challenge every day, same for everyone</span>
   <span id="btn-practice" class="mode-btn" cursor="pointer">PRACTICE</span>
   <span class="mode-desc">Unlimited shooting, no pressure</span>
   <span id="btn-modes-back" class="back-btn" cursor="pointer">BACK</span>

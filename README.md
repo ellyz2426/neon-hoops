@@ -1,130 +1,104 @@
-# Neon Hockey VR
+# Neon Hoops VR 🏀
 
-Holodeck-themed VR air hockey built with [IWSDK](https://iwsdk.dev) 0.4.1. Full physics-based puck mechanics, AI opponent with adaptive difficulty, 8 game modes, power-ups, daily challenges, and a neon wireframe aesthetic. Play in VR or in the browser.
+A neon-lit VR basketball game built with [IWSDK](https://iwsdk.dev) (Immersive Web SDK). Plays in both VR headsets and desktop browsers.
 
-**Play:** [https://ellyz2426.github.io/neon-hockey/](https://ellyz2426.github.io/neon-hockey/)
+**[Play Now →](https://ellyz2426.github.io/neon-hoops/)**
 
 ## Features
 
+### 7 Game Modes
+- **Free Throw** — 10 shots from the free throw line
+- **Three-Point Contest** — 5 racks of 5, timed 60 seconds
+- **Arcade** — Progressive difficulty with 30-second timer
+- **H.O.R.S.E.** — Classic letter game vs AI opponent
+- **Trick Shots** — 10 special challenges (swishes, bank shots, distance)
+- **Daily Challenge** — Same 10-shot challenge for everyone, every day
+- **Practice** — Unlimited shooting, no pressure
+
 ### Gameplay
-- **Physics-based puck**: 4-substep integration, mallet velocity transfer, wall rebounds, friction, speed clamping
-- **AI opponent**: State machine with prediction, wall-bounce simulation, adaptive difficulty (gets harder when losing), 3 base difficulty levels
-- **8 game modes**: Classic, Time Attack, Power-Up, Survival, Tournament, Practice, 2-Player Local, Daily Challenge
-- **Power-up system**: Speed Boost, Shield, Puck Magnet, Shrink Opponent, Giant Mallet — spawn in Power-Up mode
-- **Daily challenges**: 14 unique challenge templates, date-seeded selection, streak tracking
-- **2-player local**: Mouse vs WASD/Arrows on one screen
-- **Combo system**: Consecutive goals build multiplier up to x5 with decay timer
-- **VR charged power shot**: Hold trigger to charge, release near puck for 1.8x velocity boost
+- Arc-trajectory ball physics with 4-substep integration
+- Rim collision, backboard bounce, floor bounce, ball spin
+- Shot arc preview while charging
+- Ball trail effects with additive blending
+- Swish detection, bank shot detection
+- Scoring: swish +3, clean make +2, distance bonuses, streak multipliers
+- Streak system: HOT → ON FIRE → UNSTOPPABLE → LEGENDARY
 
 ### Customization
-- **5 table themes**: Neon Holodeck, Crimson Arena, Toxic Green, Cyberpunk, Arctic Frost
-- **6 puck skins**: Classic Neon, Plasma Core, Frozen Disc, Solar Flare, Toxic Waste, Blood Moon (2 unlock via progression)
-- **6 mallet skins**: Neon Green, Electric Blue, Hot Pink, Gold Rush, Void Walker, Chrome (2 unlock via progression)
-- **5 camera angles**: Classic, Overhead, Close Up, Cinematic, Broadcast
+- 8 ball skins (Classic Orange, Neon Blue, Plasma Green, Hot Pink, Gold Rush, Void Purple, Ice White, Lava Core)
+- 5 court themes (Neon Arena, Cyberpunk, Arctic Court, Solar Blaze, Toxic Green)
+- Volume controls for master, SFX, and music
 
 ### Progression
-- **36 achievements**: First Victory through Full Wardrobe, including daily challenge streaks, 2P milestones, and skin collection
-- **Leaderboard**: Top 20 scores, sorted and timestamped
-- **Match history**: Persistent records of last 50 matches
-- **Comprehensive stats**: Overall, records, per-mode W/L breakdowns
-- **Daily streak tracking**: Consecutive daily challenge completions
-
-### Polish
-- **Slow-motion goal replay**: 1.2s at 0.25x time scale on every goal
-- **Victory confetti**: Particle burst celebration on game end
-- **Pre-game countdown**: 3-2-1 with audio ticks
-- **Tutorial system**: 8 progressive steps for first-time players, VR-aware
-- **Puck trail effect**: Speed-based glowing trail particles
-- **Screen shake**: On goals (stronger for conceded)
-- **Boundary edge glow**: Pulsing neon strips along table edges
+- 20 achievements with localStorage persistence
+- Top 20 leaderboard
+- Career stats tracking (games, makes, streaks, high scores)
+- Daily Challenge history
 
 ### Audio
-- **20+ procedural SFX**: Mallet hits (intensity-scaled), wall bounces, goal horns, achievement jingles
-- **Button click audio** on all UI interactions
-- **Ambient soundscape**: Bass drone, triangle pad with LFO, shimmer layer
-- **Countdown beeps** for last 5 seconds in timed modes
-- **Charged shot SFX**: Rising sweep on charge, burst on release
+- 17+ procedural Web Audio SFX (throw whoosh, swish, make fanfare, miss tone, rim hit, backboard hit, floor bounce, countdown, game start/end, achievement jingle, button click, net swoosh, charge hum, perfect shot chime, dribble, streak break, crowd cheer with whistles)
+- Ambient electronic drone with LFO modulation
 
-### Technical
-- **Dual runtime**: VR (Meta Quest) + browser (mouse/keyboard control)
-- **19 PanelUI templates**: All spatial UI via `.uikitml`, zero HTML DOM overlays
-- **XR controller support**: Grip-mapped mallet, trigger charge, B-button pause
-- **Holodeck environment**: Neon grid floor/ceiling, floating wireframe decorations, 40 ambient particles, fog
+### Visual
+- Holodeck environment with neon grid floor/ceiling
+- 12 floating wireframe decorations (torus, box, sphere, cone)
+- 40 ambient particles with pulsing opacity
+- Particle celebrations on makes and burst rings on streaks
+- Net physics animation on baskets
+- Pulsing shot position marker
+
+### VR + Browser
+- Dual-runtime: XR headset + desktop browser
+- VR: trigger charge/release to shoot, B button pause, laser pointer menus
+- Browser: click-drag-up to charge, mouse aim, keyboard shortcuts (ESC, R, M, 1-7)
+- All UI via PanelUI (.uikitml) — zero HTML DOM overlays
 
 ## Controls
 
-### Browser
-| Control | Action |
-|---------|--------|
-| **Mouse** | Move mallet (Player 1) |
-| **WASD / Arrows** | Move mallet (Player 2 in 2P mode) |
-| **ESC** | Pause game |
-
 ### VR
-| Control | Action |
-|---------|--------|
-| **Right Hand** | Move mallet (grip position maps to table) |
-| **Trigger Hold** | Charge power shot (release near puck) |
-| **B Button** | Pause |
-| **Pointer / Thumbstick** | Menu interaction / navigation |
+| Action | Control |
+|--------|---------|
+| Charge shot | Hold right trigger |
+| Release shot | Release trigger |
+| Pause | B button |
+| Navigate menus | Laser pointer + click |
 
-## Game Modes
-
-| Mode | Description |
-|------|-------------|
-| Classic | First to 7 goals wins |
-| Time Attack | 60 seconds, most goals wins |
-| Power-Up | Power-ups spawn on the table — collect with your mallet |
-| Survival | 3 lives, score as many goals as you can |
-| Tournament | 4 rounds with escalating AI difficulty |
-| Practice | Free play, no opponent |
-| 2 Player Local | Mouse (P1) vs WASD/Arrows (P2) on one screen |
-| Daily Challenge | Unique challenge every day — 14 templates, streak tracking |
+### Browser
+| Action | Control |
+|--------|---------|
+| Charge shot | Click + drag up |
+| Aim | Move mouse left/right |
+| Shoot | Release click |
+| Pause/Resume | Escape |
+| Quick restart | R (game over screen) |
+| Back to menu | M (game over screen) |
+| Quick mode select | 1-7 (title/mode screen) |
 
 ## Tech Stack
+- IWSDK 0.4.1 (Immersive Web SDK)
+- TypeScript
+- Procedural Web Audio API
+- PanelUI spatial UI system (16 .uikitml templates)
+- Vite build system
 
-- **IWSDK** 0.4.1 (WebXR framework)
-- **PanelUI** — `.uikitml` spatial UI templates (19 panels)
-- **Web Audio API** — Procedural sound effects + ambient music
-- **Vite** — Build tooling with uikitml compilation
-
-## Project Structure
-
-```
-src/
-  index.ts           — Main game loop, physics, table geometry, state management
-  ai.ts              — AI opponent with prediction and adaptive difficulty
-  audio.ts           — Procedural Web Audio (20+ SFX + ambient music)
-  camera-angles.ts   — 5 camera angle presets
-  daily-challenge.ts — 14 challenge templates with date-seeded selection
-  effects.ts         — Particles, trails, screen shake, confetti
-  environment.ts     — Holodeck environment (grids, decorations, particles, lights)
-  mallet-skins.ts    — 6 mallet skins with unlock progression
-  powerups.ts        — Power-up spawning, collection, and effects
-  puck-skins.ts      — 6 puck skins with unlock progression
-  themes.ts          — 5 table color themes
-  tutorial.ts        — 8-step tutorial system
-  ui.ts              — PanelUI manager (19 panels, event wiring, state)
-ui/
-  19 .uikitml templates — All game UI (menus, HUD, settings, skins, etc.)
-```
-
-## Build Stats
-
-- **13 source files** + **19 `.uikitml` templates** = 32 total files
-- **~5,800 lines** of TypeScript + markup
-- 36 achievements, 8 game modes, 6 puck skins, 6 mallet skins, 5 themes, 5 camera angles
-- Zero HTML DOM UI — all spatial PanelUI
-- 14 daily challenge templates
-
-## Build & Deploy
+## Development
 
 ```bash
 npm install
-npm run build
-# Deploy dist/ to GitHub Pages
+npm run dev       # Start dev server with hot reload
+npm run build     # Production build to dist/
 ```
 
-## License
+## File Structure
 
-MIT
+```
+src/
+  index.ts      — Main entry, game loop, UI binding, input
+  types.ts      — Types, config, achievements, game state manager
+  audio.ts      — Procedural Web Audio SFX + ambient
+  physics.ts    — Ball physics, trail renderer, arc preview
+  particles.ts  — Particle system (celebration, sparks, bursts)
+  court.ts      — Court geometry, hoop, lighting, environment
+ui/
+  16 .uikitml templates (title, modes, daily, hud, settings, stats, etc.)
+```
