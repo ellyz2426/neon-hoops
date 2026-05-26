@@ -58,5 +58,6 @@
   <div class="hud-col">
     <span id="hud-mode" class="hud-mode">FREE THROW</span>
     <span id="hud-info" class="hud-label">--</span>
+    <span id="hud-wind" class="hud-label"></span>
   </div>
 </div>

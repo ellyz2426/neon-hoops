@@ -1,0 +1,63 @@
+<uikitml>
+  <view
+    flexDirection="column"
+    alignItems="center"
+    padding="24"
+    gap="16"
+    backgroundColor="#0a0020e0"
+    borderRadius="16"
+    borderWidth="2"
+    borderColor="#00ccff"
+  >
+    <text
+      id="tut-title"
+      fontSize="28"
+      fontWeight="bold"
+      color="#00ddff"
+    >HOW TO PLAY</text>
+
+    <view flexDirection="column" gap="8" width="100%">
+      <text fontSize="18" fontWeight="bold" color="#ff6600">BROWSER CONTROLS</text>
+      <text fontSize="14" color="#cccccc">Click + Drag Up = Charge Shot</text>
+      <text fontSize="14" color="#cccccc">Mouse Left/Right = Aim</text>
+      <text fontSize="14" color="#cccccc">Release = Shoot!</text>
+      <text fontSize="14" color="#cccccc">ESC = Pause</text>
+    </view>
+
+    <view flexDirection="column" gap="8" width="100%">
+      <text fontSize="18" fontWeight="bold" color="#ff6600">VR CONTROLS</text>
+      <text fontSize="14" color="#cccccc">Right Trigger = Charge + Shoot</text>
+      <text fontSize="14" color="#cccccc">B Button = Pause</text>
+    </view>
+
+    <view flexDirection="column" gap="8" width="100%">
+      <text fontSize="18" fontWeight="bold" color="#ff6600">TIPS</text>
+      <text fontSize="14" color="#88ff88">Watch the arc preview</text>
+      <text fontSize="14" color="#88ff88">Swishes score +3 bonus</text>
+      <text fontSize="14" color="#88ff88">Build streaks for combos!</text>
+      <text fontSize="14" color="#88ff88">Rim glow shows proximity</text>
+    </view>
+
+    <view
+      id="btn-tut-play"
+      paddingTop="10"
+      paddingBottom="10"
+      paddingLeft="40"
+      paddingRight="40"
+      backgroundColor="#ff6600"
+      borderRadius="8"
+    >
+      <text fontSize="20" fontWeight="bold" color="#ffffff">GOT IT!</text>
+    </view>
+
+    <view
+      id="btn-tut-skip"
+      paddingTop="6"
+      paddingBottom="6"
+      paddingLeft="20"
+      paddingRight="20"
+    >
+      <text fontSize="12" color="#888888">Don't show again</text>
+    </view>
+  </view>
+</uikitml>

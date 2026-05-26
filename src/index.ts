@@ -40,6 +40,16 @@ import {
   updateEnvironmentAnimations,
   type CourtAssets,
 } from './court';
+import {
+  BallShadow,
+  RimGlowIndicator,
+  InstantReplay,
+  ScorePopupSystem,
+  ConfettiSystem,
+  WindSystem,
+  IdleDribble,
+  type ReplayPoint,
+} from './effects';
 
 // ============================================================
 // HELPERS
@@ -47,9 +57,9 @@ import {
 
 function setText(doc: UIKitDocument | undefined, id: string, text: string) {
   if (!doc) return;
-  const el = doc.getElementById(id);
-  if (el && el.text && typeof el.text === 'object' && 'value' in (el.text as Record<string, unknown>)) {
-    (el.text as any).value = text;
+  const el = doc.getElementById(id) as any;
+  if (el?.text && typeof el.text === 'object' && 'value' in el.text) {
+    el.text.value = text;
   }
 }
 
@@ -138,6 +148,22 @@ async function main() {
   // Net animation state
   let netAnimating = false;
   let netAnimStart = 0;
+
+  // ============================================================
+  // NEW EFFECT SYSTEMS (Round 4)
+  // ============================================================
+
+  const ballShadow = new BallShadow(world.scene as any);
+  const rimGlow = new RimGlowIndicator(world.scene as any);
+  const replay = new InstantReplay(world.scene as any);
+  const scorePopups = new ScorePopupSystem(world.scene as any);
+  const confetti = new ConfettiSystem(world.scene as any);
+  const wind = new WindSystem();
+  const idleDribble = new IdleDribble();
+  let lastMakePath: ReplayPoint[] = [];
+  let tutorialSeen = false;
+  try { tutorialSeen = localStorage.getItem('neon-hoops-tutorial-seen') === 'true'; } catch {}
+  let difficulty: 'easy' | 'medium' | 'hard' = 'medium';
 
   // ============================================================
   // UI ENTITIES
@@ -247,11 +273,16 @@ async function main() {
   statsEntity.object3D!.position.set(0, 2.5, -2);
   statsEntity.addComponent(PanelUI, { config: '/ui/stats.json', maxWidth: 0.6, maxHeight: 1.1 });
 
+  // Tutorial panel
+  const tutorialEntity = world.createTransformEntity(undefined, { persistent: true });
+  tutorialEntity.object3D!.position.set(0, 2.5, -2);
+  tutorialEntity.addComponent(PanelUI, { config: '/ui/tutorial.json', maxWidth: 0.6, maxHeight: 1.0 });
+
   // Panel visibility
   const allPanelEntities = [
     titleEntity, modeEntity, diffEntity, hudEntity, toastEntity, powerEntity,
     countdownEntity, pauseEntity, goEntity, lbEntity, achEntity, settingsEntity,
-    helpEntity, ballSelectEntity, dailyEntity, statsEntity,
+    helpEntity, ballSelectEntity, dailyEntity, statsEntity, tutorialEntity,
   ];
 
   let toastTimer = 0;
@@ -337,6 +368,7 @@ async function main() {
 
   function shootBall(power: number, aimAngle: number) {
     if (ballState.inFlight) return;
+    idleDribble.reset();
     launchBall(ballState, power, aimAngle);
     gs.shotsTaken++;
     audio.playThrow();
@@ -348,6 +380,13 @@ async function main() {
     if (result.made) {
       netAnimating = true;
       netAnimStart = elapsedTime;
+
+      // Save replay path for ghost trail
+      lastMakePath = replay.commitPath();
+      replay.startReplay();
+
+      // Score popup effect
+      scorePopups.spawn(assets.ball.position.clone(), result.swish ? 0xff6600 : 0x00aaff);
 
       if (result.swish) {
         audio.playSwish();
@@ -392,6 +431,7 @@ async function main() {
       if (gs.totalShotsMadeAll >= 100) unlockAchievement('total_100');
       if (gs.totalShotsMadeAll >= 500) unlockAchievement('total_500');
     } else {
+      replay.clearRecording();
       if (gs.streak >= 3) {
         audio.playStreakBreak();
       }
@@ -524,6 +564,7 @@ async function main() {
       a.unlocked = true;
       audio.playAchievement();
       showToast(a.name, 'UNLOCKED!');
+      confetti.burst(new Vector3(0, 3, -2), 35);
       gs.saveSaveData();
     }
   }
@@ -630,6 +671,7 @@ async function main() {
       case 'practice': info = 'No pressure'; break;
     }
     setText(doc, 'hud-info', info);
+    setText(doc, 'hud-wind', wind.getDirectionLabel());
   }
 
   function updatePowerBar(power: number) {
@@ -732,9 +774,9 @@ async function main() {
     bindBtn(modeDoc, 'btn-modes-back', audio, () => { gs.state = 'title'; showPanel(titleEntity); });
 
     const diffDoc = diffEntity.getValue(PanelDocument, 'document') as UIKitDocument | undefined;
-    bindBtn(diffDoc, 'btn-easy', audio, () => startGame('horse'));
-    bindBtn(diffDoc, 'btn-medium', audio, () => startGame('horse'));
-    bindBtn(diffDoc, 'btn-hard', audio, () => startGame('horse'));
+    bindBtn(diffDoc, 'btn-easy', audio, () => { difficulty = 'easy'; wind.setDifficulty('easy'); startGame('horse'); });
+    bindBtn(diffDoc, 'btn-medium', audio, () => { difficulty = 'medium'; wind.setDifficulty('medium'); startGame('horse'); });
+    bindBtn(diffDoc, 'btn-hard', audio, () => { difficulty = 'hard'; wind.setDifficulty('hard'); startGame('horse'); });
     bindBtn(diffDoc, 'btn-diff-back', audio, () => { gs.state = 'modeselect'; showPanel(modeEntity); });
 
     const pauseDoc = pauseEntity.getValue(PanelDocument, 'document') as UIKitDocument | undefined;
@@ -805,9 +847,27 @@ async function main() {
     const statsDoc = statsEntity.getValue(PanelDocument, 'document') as UIKitDocument | undefined;
     bindBtn(statsDoc, 'btn-stats-back', audio, () => { gs.state = 'title'; showPanel(titleEntity); });
 
+    // Tutorial
+    const tutDoc = tutorialEntity.getValue(PanelDocument, 'document') as UIKitDocument | undefined;
+    bindBtn(tutDoc, 'btn-tut-play', audio, () => {
+      tutorialSeen = true;
+      try { localStorage.setItem('neon-hoops-tutorial-seen', 'true'); } catch {}
+      showPanel(titleEntity);
+    });
+    bindBtn(tutDoc, 'btn-tut-skip', audio, () => {
+      tutorialSeen = true;
+      try { localStorage.setItem('neon-hoops-tutorial-seen', 'true'); } catch {}
+      showPanel(titleEntity);
+    });
+
     // Apply loaded settings
-    showPanel(titleEntity);
+    if (!tutorialSeen) {
+      showPanel(tutorialEntity);
+    } else {
+      showPanel(titleEntity);
+    }
     audio.startAmbient();
+    audio.startSynthwaveMusic();
     applyTheme(assets, THEMES[gs.themeIndex], world.scene.fog as Fog);
     applyBallSkin(assets, BALL_SKINS[gs.ballSkinIndex]);
     trail.setColor(BALL_SKINS[gs.ballSkinIndex].glowColor);
@@ -1044,6 +1104,41 @@ async function main() {
 
     // Ball trail
     trail.update(trailPoints, dt);
+
+    // ============================================================
+    // Round 4 Effect Updates
+    // ============================================================
+
+    // Ball shadow follows ball position
+    ballShadow.update(ballState.pos);
+
+    // Rim glow indicator
+    rimGlow.update(ballState.pos, ballState.inFlight);
+
+    // Instant replay ghost trail
+    if (ballState.inFlight) {
+      replay.recordPoint(ballState.pos, elapsedTime);
+    }
+    replay.update(dt, lastMakePath);
+
+    // Score popups float upward
+    scorePopups.update(dt);
+
+    // Confetti
+    confetti.update(dt);
+
+    // Wind system
+    wind.update(dt);
+    if (ballState.inFlight && wind.getDirectionLabel() !== '') {
+      wind.applyToBall(ballState.vel, dt);
+    }
+
+    // Idle dribble animation
+    if (gs.state === 'playing' && !ballState.inFlight) {
+      const dribbleHit = idleDribble.update(dt, ballState.pos, ballState.inFlight, true);
+      assets.ball.position.copy(ballState.pos);
+      if (dribbleHit) audio.playDribble();
+    }
 
     // Net animation
     if (netAnimating) {

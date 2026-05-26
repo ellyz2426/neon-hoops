@@ -501,4 +501,149 @@ export class AudioManager {
     o.start(t);
     o.stop(t + 0.3);
   }
+
+  // ============================================================
+  // SYNTHWAVE BACKGROUND MUSIC TRACK
+  // ============================================================
+
+  private musicNodes: (OscillatorNode | AudioBufferSourceNode)[] = [];
+  private musicPlaying = false;
+  private musicLoopTimer: ReturnType<typeof setInterval> | null = null;
+
+  /** Start a synthwave beat — bass + arpeggiated chords + hi-hat pattern */
+  startSynthwaveMusic() {
+    this.init();
+    if (!this.ctx || !this.musicGain || this.musicPlaying) return;
+    this.musicPlaying = true;
+
+    const bpm = 110;
+    const beatLen = 60 / bpm;
+
+    // Bass synth — repeating bass pattern
+    const playBassNote = (freq: number, startAt: number, dur: number) => {
+      if (!this.ctx || !this.musicGain) return;
+      const osc = this.ctx.createOscillator();
+      osc.type = 'sawtooth';
+      osc.frequency.value = freq;
+      const lp = this.ctx.createBiquadFilter();
+      lp.type = 'lowpass';
+      lp.frequency.value = 400;
+      lp.Q.value = 5;
+      const g = this.ctx.createGain();
+      g.gain.setValueAtTime(0, startAt);
+      g.gain.linearRampToValueAtTime(0.06, startAt + 0.02);
+      g.gain.setValueAtTime(0.06, startAt + dur * 0.7);
+      g.gain.exponentialRampToValueAtTime(0.001, startAt + dur);
+      osc.connect(lp);
+      lp.connect(g);
+      g.connect(this.musicGain);
+      osc.start(startAt);
+      osc.stop(startAt + dur);
+      this.musicNodes.push(osc);
+    };
+
+    // Arpeggio synth — shimmering triads
+    const playArp = (freq: number, startAt: number) => {
+      if (!this.ctx || !this.musicGain) return;
+      const osc = this.ctx.createOscillator();
+      osc.type = 'square';
+      const lp = this.ctx.createBiquadFilter();
+      lp.type = 'lowpass';
+      lp.frequency.value = 2000;
+      osc.frequency.value = freq;
+      const g = this.ctx.createGain();
+      g.gain.setValueAtTime(0, startAt);
+      g.gain.linearRampToValueAtTime(0.018, startAt + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.001, startAt + beatLen * 0.4);
+      osc.connect(lp);
+      lp.connect(g);
+      g.connect(this.musicGain);
+      osc.start(startAt);
+      osc.stop(startAt + beatLen * 0.5);
+      this.musicNodes.push(osc);
+    };
+
+    // Hi-hat from noise
+    const playHiHat = (startAt: number, accent: boolean) => {
+      if (!this.ctx || !this.musicGain) return;
+      const buf = this.ctx.createBuffer(1, this.ctx.sampleRate * 0.05, this.ctx.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1);
+      const ns = this.ctx.createBufferSource();
+      ns.buffer = buf;
+      const hp = this.ctx.createBiquadFilter();
+      hp.type = 'highpass';
+      hp.frequency.value = 8000;
+      const g = this.ctx.createGain();
+      g.gain.setValueAtTime(accent ? 0.03 : 0.015, startAt);
+      g.gain.exponentialRampToValueAtTime(0.001, startAt + (accent ? 0.06 : 0.03));
+      ns.connect(hp);
+      hp.connect(g);
+      g.connect(this.musicGain);
+      ns.start(startAt);
+      this.musicNodes.push(ns);
+    };
+
+    // Schedule one 4-bar loop
+    const scheduleLoop = () => {
+      if (!this.ctx || !this.musicPlaying) return;
+      const t = this.ctx.currentTime + 0.05;
+
+      // Chord progressions (Am - F - C - G) in bass frequencies
+      const bassPattern = [55, 55, 43.65, 43.65, 65.41, 65.41, 49, 49]; // 8 half-notes
+      const arpChords = [
+        [220, 261, 330],   // Am
+        [220, 261, 330],   // Am
+        [174, 220, 261],   // F
+        [174, 220, 261],   // F
+        [261, 330, 392],   // C
+        [261, 330, 392],   // C
+        [196, 247, 294],   // G
+        [196, 247, 294],   // G
+      ];
+
+      for (let bar = 0; bar < 4; bar++) {
+        for (let beat = 0; beat < 4; beat++) {
+          const idx = bar * 2 + Math.floor(beat / 2);
+          const beatTime = t + (bar * 4 + beat) * beatLen;
+
+          // Bass on beats 1 and 3
+          if (beat === 0 || beat === 2) {
+            playBassNote(bassPattern[idx], beatTime, beatLen * 1.8);
+          }
+
+          // Arpeggiated chord — one note per 8th
+          for (let eighth = 0; eighth < 2; eighth++) {
+            const arpTime = beatTime + eighth * beatLen * 0.5;
+            const chord = arpChords[idx];
+            const noteIdx = (beat * 2 + eighth) % chord.length;
+            playArp(chord[noteIdx] * 2, arpTime); // Up an octave for shimmer
+          }
+
+          // Hi-hat on every 8th note, accented on beat
+          for (let eighth = 0; eighth < 2; eighth++) {
+            const hhTime = beatTime + eighth * beatLen * 0.5;
+            playHiHat(hhTime, eighth === 0);
+          }
+        }
+      }
+    };
+
+    // Schedule first loop immediately, then repeat
+    scheduleLoop();
+    const loopDuration = 4 * 4 * beatLen * 1000; // 4 bars in ms
+    this.musicLoopTimer = setInterval(() => {
+      if (this.musicPlaying) scheduleLoop();
+    }, loopDuration - 100); // Slight overlap for gapless
+  }
+
+  stopSynthwaveMusic() {
+    this.musicPlaying = false;
+    if (this.musicLoopTimer) {
+      clearInterval(this.musicLoopTimer);
+      this.musicLoopTimer = null;
+    }
+    this.musicNodes.forEach(n => { try { n.stop(); } catch {} });
+    this.musicNodes = [];
+  }
 }

@@ -129,6 +129,16 @@
               "class": "hud-label"
             },
             "dataUid": "uid-13"
+          },
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [],
+            "properties": {
+              "id": "hud-wind",
+              "class": "hud-label"
+            },
+            "dataUid": "uid-14"
           }
         ],
         "properties": {
@@ -277,7 +287,7 @@
         "column": 0
       },
       "end": {
-        "line": 61,
+        "line": 62,
         "column": 6
       }
     },
@@ -377,7 +387,7 @@
         "column": 2
       },
       "end": {
-        "line": 60,
+        "line": 61,
         "column": 8
       }
     },
@@ -399,6 +409,16 @@
       "end": {
         "line": 59,
         "column": 51
+      }
+    },
+    "uid-14": {
+      "start": {
+        "line": 60,
+        "column": 4
+      },
+      "end": {
+        "line": 60,
+        "column": 49
       }
     }
   }
